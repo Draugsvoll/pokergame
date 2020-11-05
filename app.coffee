@@ -152,9 +152,8 @@ HeroHandStrength = (heroCards, board) ->
     hand.push(board[4])
     console.log hand
     #check for hand strengths
-    hasFlush(hand)
-    hasPairsOrTripsOrQuads(hand)
-    #hasTripsOrQuads(hand)
+    #hasFlush(hand)
+
 
 
 hasFlush = (hand) ->    
@@ -180,6 +179,7 @@ hasFlush = (hand) ->
     else    
 
 hasPairsOrTripsOrQuads = (hand) ->
+    quads = []
     trips = []
     pairs = []
     ranks = [ 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 0 ]
@@ -189,11 +189,13 @@ hasPairsOrTripsOrQuads = (hand) ->
     # check for how many of same
     for value, index in ranks
         if value is 2
-            #index gives actual card value also
+            #index+1 EQUALS card value
             pairs.push(index+1)
         else if value is 3
             trips.push(index+1)
-    if pairs.length is 0
+        else if value is 4
+            quads.push(index+1)
+    if pairs.length is 0 && quads.length is 0 && trips.length is 0
         console.log 'no pairs'
     else if pairs.length is 1
         pairs[0] += 1
@@ -203,12 +205,16 @@ hasPairsOrTripsOrQuads = (hand) ->
         console.log outcome
     if trips.length is 1
         if pairs.length is 1
-            outcome = "du har hus, to like: #{pairs[0]+1} 3 like:  #{trips[0]+1} "
-            console.log 
+            outcome = "du har hus, to like: #{pairs[0]+1} tre like:  #{trips[0]+1} "
+            console.log outcome
+           #return 'DU HAR HUS'
         console.log 'TRIPS : ', trips[0]+1
+    if quads.length is 1
+        outcome = "du har quads: #{quads[0]+1} "
+        console.log 'HER',outcome
+        return 'DU HAR QUADS'
 
     
-hasTripsOrQuads = (hand) ->
 
 
 dealerAct = ->
@@ -222,10 +228,14 @@ dealerAct = ->
     else street is 'river' 
 
 
+holeCards = []
+holeCards.push(deck[0], deck[13], deck[26], deck[39], deck[14], deck[6], deck[7])
+console.log 'cards', holeCards
+console.log ' RESULTAT', hasPairsOrTripsOrQuads(holeCards)
 
-dealCards()
-dealerAct()
-dealFlop()
-dealTurn()
-dealRiver()
-HeroHandStrength(heroCards, board)
+# dealCards()
+# dealerAct()
+# dealFlop()
+# dealTurn()
+# dealRiver()
+# HeroHandStrength(heroCards, board)
