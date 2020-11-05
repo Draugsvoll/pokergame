@@ -183,32 +183,40 @@ hasPairsOrTripsOrQuads = (hand) ->
     trips = []
     pairs = []
     ranks = [ 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 0 ]
+
+    #check every card in hand
     for card in hand
         rank = card.rank
         ranks[rank-2] +=1
     # check for how many of same
     for value, index in ranks
         if value is 2
-            #index+1 EQUALS card value
+            #index+1 IS ALSO the card value 
             pairs.push(index+1)
         else if value is 3
             trips.push(index+1)
         else if value is 4
             quads.push(index+1)
+    # no pair
     if pairs.length is 0 && quads.length is 0 && trips.length is 0
         console.log 'no pairs'
+    # one pair
     else if pairs.length is 1
         pairs[0] += 1
         console.log 'pair in: ',pairs[0]
+    # two pair
     else if pairs.length is 2
         outcome = "two pairs: #{pairs[0]+1} and #{pairs[1]+1} "
         console.log outcome
+    # trips
     if trips.length is 1
+        # full house
         if pairs.length is 1
             outcome = "du har hus, to like: #{pairs[0]+1} tre like:  #{trips[0]+1} "
             console.log outcome
            #return 'DU HAR HUS'
         console.log 'TRIPS : ', trips[0]+1
+    # quads
     if quads.length is 1
         outcome = "du har quads: #{quads[0]+1} "
         console.log 'HER',outcome
