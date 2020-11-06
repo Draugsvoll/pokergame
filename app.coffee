@@ -314,6 +314,8 @@ updateHandStrengths = ->
 
 renderHeroStack = (stack) ->
     heroStack.innerHTML = '$' + stack 
+renderVillainStack = (stack) ->
+    villainStack.innerHTML = '$' + stack 
 
 # CREATE PLAYER CLASSES
 class Player
@@ -344,9 +346,11 @@ nextAction = ->
         if heroIsDealer is true 
             button_bar.style.visibility = 'visible'
             hero.paySmallBlind()
+            villain.payBigBlind()
             renderHeroStack(hero.getStackSize())
+            renderVillainStack(villain.getStackSize())
             potSize = 3
-            potDOM.innerHTML = 'Pot: ' + potSize
+            potDOM.innerHTML = 'Pot: $' + potSize
         currentStreet = 'pre-flop'
 
     # PRE-FLOP
