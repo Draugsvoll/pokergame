@@ -1,21 +1,34 @@
 # DOM hooks
+potDOM = document.querySelector('.pot')
+action_btn = document.querySelector(".action-btn")
+button_bar = document.querySelector('.button-bar')
 heroCard1DOM = document.querySelector('#hero-card1')
 heroCard2DOM = document.querySelector('#hero-card2')
+heroStrength = document.querySelector('.hero-strength')
+heroStack = document.querySelector('.hero-stack')
+villainStack = document.querySelector('.villain-stack')
 villainCard1DOM = document.querySelector('#villain-card1')
 villainCard2DOM = document.querySelector('#villain-card2')
-villainCardsDOM = document.querySelector('.villain-cards')
+villainStrength = document.querySelector('.villain-strength')
 boardCard1 = document.querySelector('#board-card1')
 boardCard2 = document.querySelector('#board-card2')
 boardCard3 = document.querySelector('#board-card3')
 boardCard4 = document.querySelector('#board-card4')
 boardCard5 = document.querySelector('#board-card5')
 
+
 # variables
-street = 'pre-flop'
+currentStreet = 'new-hand'
+defaultStackSize = 200
+heroIsDealer = true;
+isHerosTurn = true;
 board = []
 heroCards = []
 villainCards = []
+button_bar.style.visibility = 'hidden'
+potSize = 0
 
+# CARD DECK
 deck = [
     #hearts
     { value: '2H', rank: 2},
@@ -75,7 +88,7 @@ deck = [
     { value: 'AD', rank: 14},
 ] 
 
-
+# DEALER ACTIONS 
 dealCards = ->
     # Villain cards
     cardId = Math.floor(Math.random() * deck.length)
@@ -93,21 +106,21 @@ dealCards = ->
     heroCards.push(deck[cardId])
     deck.splice(cardId, 1)
 
-    #Render cards
+    # render players cards
     renderPlayerCards()
-
     console.log 'villains cards: ', villainCards
     console.log 'Heros cards: ',heroCards
     console.log 'cards left: ',deck.length
 
 renderPlayerCards = ->
     #render villain vards
-    villainCard1DOM.src = "https://deckofcardsapi.com/static/img/#{villainCards[0].value}.png"
-    villainCard2DOM.src = "https://deckofcardsapi.com/static/img/#{villainCards[1].value}.png"
+    villainCard1DOM.src =  "assets/#{villainCards[0].value}.png"
+    villainCard2DOM.src =  "assets/#{villainCards[1].value}.png"
 
     #render Hero cards
-    heroCard1DOM.src = "https://deckofcardsapi.com/static/img/#{heroCards[0].value}.png"
-    heroCard2DOM.src = "https://deckofcardsapi.com/static/img/#{heroCards[1].value}.png"
+    heroCard1DOM.src = "assets/#{heroCards[0].value}.png"
+    heroCard2DOM.src = "assets/#{heroCards[1].value}.png"
+
 
 dealFlop = ->
     i = 3
@@ -117,66 +130,88 @@ dealFlop = ->
         board.push(card)
         deck.splice(cardId, 1)
         i--
-    boardCard1.src = "https://deckofcardsapi.com/static/img/#{board[0].value}.png"
-    boardCard2.src = "https://deckofcardsapi.com/static/img/#{board[1].value}.png"
-    boardCard3.src = "https://deckofcardsapi.com/static/img/#{board[2].value}.png"
+    boardCard1.src = "assets/#{board[0].value}.png"
+    boardCard2.src = "assets/#{board[1].value}.png"
+    boardCard3.src = "assets/#{board[2].value}.png"
     console.log 'flop dealet, det er ' + deck.length + ' kort igjen'
+
 
 dealTurn = ->
     cardId = Math.floor(Math.random() * deck.length)
     card = deck[cardId]
     board.push(card)
     deck.splice(cardId, 1)
-    boardCard4.src = "https://deckofcardsapi.com/static/img/#{board[3].value}.png"
+    boardCard4.src = "assets/#{board[3].value}.png"
     console.log 'turn dealet, det er ' + deck.length + ' kort igjen'
+
 
 dealRiver = ->
     cardId = Math.floor(Math.random() * deck.length)
     card = deck[cardId]
     board.push(card)
     deck.splice(cardId, 1)
-    boardCard5.src = "https://deckofcardsapi.com/static/img/#{board[4].value}.png"
+    boardCard5.src = "assets/#{board[4].value}.png"
     console.log 'river dealet, det er ' + deck.length + ' kort igjen'
 
+
 endHand = ->
+    console.log 'ending hand'
 
-HeroHandStrength = (heroCards, board) ->
-    # get hand
+# GET HAND-STRENGTH INFORMATION
+getHandStrength = (playerCards, board) ->
+    handStrength = ['']
+    # get the hand
     hand = []
-    hand.push(heroCards[0])
-    hand.push(heroCards[1])
-    hand.push(board[0])
-    hand.push(board[1])
-    hand.push(board[2])
-    hand.push(board[3])
-    hand.push(board[4])
-    console.log hand
+    for card in playerCards
+        hand.push(card)
+    for card in board   
+        hand.push(card)
     #check for hand strengths
-    #hasFlush(hand)
-
-
-
+    handStrength.push(hasFlush(hand))
+    handStrength.push(hasPairsOrTripsOrQuads(hand))
+    handStrength.push(hasStraight(hand))
+    # return actual hand (the strongest one)
+    for strength, index in handStrength
+        if handStrength[index].includes('Four')
+            return handStrength[index]
+        else if strength.includes('house')
+            return handStrength[index]
+        else if strength.includes('Flush')
+            return handStrength[index]
+        else if strength.includes('Straight')
+            return handStrength[index]
+        else if strength.includes('Three')
+            return handStrength[index]
+        else if strength.includes('Two')
+            return handStrength[index]
+        else if strength.includes('Pair')
+            return handStrength[index]
+        else if strength.includes('High')
+            return handStrength[index]
+    
 hasFlush = (hand) ->    
     suits = { hearts: 0, spades: 0, clubs: 0, diamonds: 0 } 
+    # push suits in hand to new array
     for card, index in hand
-        if card[1] is 'H'
+        if card.value.includes('H')
             suits.hearts += 1
-        else if card[1] is 'C'
+        else if card.value.includes('C')
             suits.clubs += 1
-        else if card[1] is 'D'
+        else if card.value.includes('D')
             suits.diamonds += 1
-        else 
+        else if card.value.includes('S')
             suits.spades +=1
     # check for flush
     if suits.hearts >= 5
-        console.log 'flush in Hearts'
+        return 'Flush in Hearts'
     else if suits.clubs >= 5  
-        console.log 'flush in clubs'
+        return 'Flush in clubs'
     else if suits.diamonds >= 5  
-        console.log 'flush in diamonds'
+        return 'Flush in diamonds'
     else if suits.spades >= 5  
-        console.log 'flush in spades'
-    else    
+        return 'Flush in spades'
+    else   
+        return ' '
 
 hasPairsOrTripsOrQuads = (hand) ->
     quads = []
@@ -197,53 +232,145 @@ hasPairsOrTripsOrQuads = (hand) ->
             trips.push(index+1)
         else if value is 4
             quads.push(index+1)
-    # no pair
+    # no pair (high card)
     if pairs.length is 0 && quads.length is 0 && trips.length is 0
-        console.log 'no pairs'
+            i = ranks.length
+            while (i >= 0)
+                if ranks[i] > 0
+                    highCard = (i+2).toString()
+                    return 'High card '+ highCard
+                else
+                i--
     # one pair
-    else if pairs.length is 1
+    else if pairs.length is 1 && trips.length is 0 && trips.length is 0
         pairs[0] += 1
-        console.log 'pair in: ',pairs[0]
+        return 'Pair of ' + pairs[0].toString()
     # two pair
     else if pairs.length is 2
-        outcome = "two pairs: #{pairs[0]+1} and #{pairs[1]+1} "
-        console.log outcome
+        pair1 = (pairs[0]+1).toString()
+        pair2 = (pairs[1]+1).toString()
+        outcome1 = "Two pairs " + pair1 + ' and ' + pair2
+        return outcome1
+    # three pair
+    else if pairs.length is 3
+        pair1 = (pairs[0]+1).toString()
+        pair2 = (pairs[1]+1).toString()
+        outcome1 = "Two pairs " + pair1 + ' and ' + pair2
+        return outcome1
     # trips
     if trips.length is 1
+        if pairs.length is 0
+            card = (trips[0]+1).toString()
+            return 'Three of a kind ' + card
         # full house
         if pairs.length is 1
-            outcome = "du har hus, to like: #{pairs[0]+1} tre like:  #{trips[0]+1} "
-            console.log outcome
-           #return 'DU HAR HUS'
-        console.log 'TRIPS : ', trips[0]+1
+            pair = pairs[0]+1
+            trips = trips[0]+1
+            outcome = 'Full house ' +  trips + '' + trips + '' + trips +  ' and ' + pair + '' + pair 
+            return outcome
     # quads
     if quads.length is 1
-        outcome = "du har quads: #{quads[0]+1} "
-        console.log 'HER',outcome
-        return 'DU HAR QUADS'
+        outcome = "Four of a kind " + (quads[0]+1).toString()
+        return outcome
 
-    
+hasStraight = (hand) ->
+    ranks = [ 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 0 ]
+    counter = 0
+    startedCounting = false
+    # place every card in correct order
+    for card in hand
+        rank = card.rank
+        ranks[rank-2] +=1
+    # loop cards
+    for card, index in ranks
+        # no straight if 3 cards of same value
+        if ranks[index] is 3
+        else if ranks[index] > 0
+            if ranks[index+1]>0 && ranks[index+2]>0 && ranks[index+3]>0 && ranks[index+4]>0
+                return 'Straight '
+            else  
+                return ' '
 
+# CREATE CUSTOM FLOP
+# testHeroHand = [ deck[0], deck[13] ]
+# testBoard = [ deck[26], deck[30], deck[1], deck[14], deck[22]]
+# console.log 'BOARD', testHeroHand
+# console.log 'HERO', testBoard
+# handStrength(testHeroHand, testBoard)
 
-dealerAct = ->
-    if street is 'pre-flop'
-        console.log street
-
-    else if street is 'flop' 
-
-    else if street is 'turn' 
-
-    else street is 'river' 
-
-
-holeCards = []
-holeCards.push(deck[0], deck[13], deck[26], deck[39], deck[14], deck[6], deck[7])
-console.log 'cards', holeCards
-console.log ' RESULTAT', hasPairsOrTripsOrQuads(holeCards)
-
-# dealCards()
-# dealerAct()
-# dealFlop()
-# dealTurn()
+#dealCards()
+#dealFlop()
+#dealTurn()
 # dealRiver()
-# HeroHandStrength(heroCards, board)
+
+
+updateHandStrengths = ->
+    heroStrength.innerHTML = getHandStrength(heroCards, board)
+    villainStrength.innerHTML = getHandStrength(villainCards, board)
+
+# updateStackSizes = ->
+#     heroStack.innerHTML = heroStackSize + '$'
+#     villainStack.innerHTML = villainStackSize + '$'
+
+renderHeroStack = (stack) ->
+    heroStack.innerHTML = '$' + stack 
+
+# CREATE PLAYER CLASSES
+class Player
+  constructor: (@stackSize) ->
+
+  paySmallBlind: ->
+    console.log 'paying small blind'
+    @stackSize -= 1
+    heroStack
+
+  payBigBlind: ->
+    console.log 'paying big blind'
+    @stackSize -= 2
+
+  getStackSize: ->
+    return @stackSize  
+
+hero = new Player (defaultStackSize)
+villain = new Player (defaultStackSize)
+
+
+# GAME TREE
+
+nextAction = ->
+    # PRE HAND
+    if currentStreet is 'new-hand'
+        dealCards()
+        if heroIsDealer is true 
+            button_bar.style.visibility = 'visible'
+            hero.paySmallBlind()
+            renderHeroStack(hero.getStackSize())
+            potSize = 3
+            potDOM.innerHTML = 'Pot: ' + potSize
+        currentStreet = 'pre-flop'
+
+    # PRE-FLOP
+    else if currentStreet is 'pre-flop'
+        dealFlop()
+        updateHandStrengths()
+        currentStreet = 'flop'
+
+    # FLOP
+    else if currentStreet is 'flop'
+        dealTurn()
+        updateHandStrengths()
+        currentStreet = 'turn'
+
+    # TURN
+    else if currentStreet is 'turn'
+        dealRiver()
+        updateHandStrengths()
+        currentStreet = 'river'
+
+    # RIVER
+    else if currentStreet is 'river'
+        endHand()
+
+
+action_btn.addEventListener 'click', nextAction
+
