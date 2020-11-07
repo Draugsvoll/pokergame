@@ -41,11 +41,11 @@ img {
 
 .hero-current-bet, .villain-current-bet {
     margin-top: 15px;
+    font-size: 30px;
 }
 
 .villain-acting {
-    visibility: hidden;
-    font-size: 20px;
+    font-size: 25px;
 }
 
 button {

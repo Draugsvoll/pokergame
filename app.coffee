@@ -468,7 +468,21 @@ updateHandStrengths = ->
 
 
 # RENDERING
+renderPot = (amount) -> 
+    potDOM.innerHTML = '$'+amount
 
+renderButtons = (facingBet) ->
+    facingAmount = facingBet - hero.getCurrentBet()
+    if facingAmount is 0
+        fold_btn.innerHTML = 'Fold'
+        check_call_btn.innerHTML = 'Check'
+        bet_raise_btn.innerHTML = 'Bet'
+    else 
+        fold_btn.innerHTML = 'Fold'
+        check_call_btn.innerHTML = 'Call $' + facingAmount
+        bet_raise_btn.innerHTML = 'Raise $' + facingAmount * 2
+
+    
 renderStacks = ->
     heroStackSize = hero.getStackSize()
     villainStackSize = villain.getStackSize()
@@ -507,14 +521,13 @@ renderPlayerCards = ->
     heroCard2DOM.src = "assets/#{heroCards[1].value}.png"
     
 
-# ACTIONS LOGIC
-heroAct = (currentStreet, potSize, facingAction) ->
-    # PRE-FLOP
-        
-
+#
+# VILLAIN LOGIC (ACTIONS) #
+#
 villainAct = (currentStreet, potSize, isDealer) ->
     renderStacks()
-    villainActing.style.visibility = 'visible'
+    villainActingText = ''
+    villainActing.innerHTML = 'Villain is acting..'
     setTimeout (->
         # Villain Acts First Pre-flop
         if currentStreet is 'new-hand'
@@ -525,7 +538,10 @@ villainAct = (currentStreet, potSize, isDealer) ->
                 console.log 'checking'
             else if rand > 33 && rand < 66
                 console.log 'betting 10$'
+                betAmount = 10
+                villainActingText = 'Villain bets ' + betAmount
                 villain.bets(10)
+                renderButtons(betAmount)
             else    
                 console.log 'raising'
         # Villain Acts Second Pre-flop
@@ -541,24 +557,20 @@ villainAct = (currentStreet, potSize, isDealer) ->
                 villain.calls(amountToCall)
             else    
                 console.log 'raising'
-
         renderStacks()
         isHerosTurn = true
         button_bar.style.visibility = 'visible'
-        villainActing.style.visibility = 'hidden'
+        villainActing.innerHTML = villainActingText
     ), 2000
-   
+    
 
-villainChecks = ->
-villaiBets = (amount) ->
-    
-    
 
 # GAME TREE
 nextAction = ->
     # PRE HAND
     if currentStreet is 'new-hand'
         dealCards()
+        renderButtons(0)
         potSize = 3
         potDOM.innerHTML = 'Pot: $' + potSize
         # HERO IS DEALER
@@ -607,10 +619,10 @@ nextAction = ->
         endHand()
 # GAME-TREE
 
-renderPot = (amount) -> 
-    potDOM.innerHTML = '$'+amount
-
-heroFold = ->
+#
+# HERO BUTTONS (ACTION LOGIC) #
+#
+fold = ->
     villain.winsPot()
     board = []
     renderResetFlop()
@@ -619,16 +631,23 @@ heroFold = ->
     heroIsDealer = !heroIsDealer
     nextAction()
 
-heroBetRaise = ->
+betRaise = ->
     hero.bets(50)
+
+checkCall = ->
+    facingBet = villain.getCurrentBet() - hero.getCurrentBet()
+    console.log 'Calling bet :', facingBet
+    hero.calls(facingBet)
 
 
 action_btn.addEventListener 'click', nextAction
-fold_btn.addEventListener 'click', heroFold
-#check_call_btn.addEventListener 'click', check_call
-bet_raise_btn.addEventListener 'click', heroBetRaise
+fold_btn.addEventListener 'click', fold
+check_call_btn.addEventListener 'click', checkCall
+bet_raise_btn.addEventListener 'click', betRaise
 
+#
 # CREATE PLAYER CLASSES
+#
 class Player
   constructor: (@stackSize, @currentBet) ->
 
@@ -655,22 +674,23 @@ class Player
     renderPot(potSize)
 
   bets: (amount) ->
-    @stackSize -= amount
-    potSize += amount
+    @stackSize -= (amount-@currentBet)
+    potSize += (amount-@currentBet)
     prevBet = @currentBet
     @currentBet = amount
-    renderPot(potSize-prevBet)
-    renderBets(amount)
+    renderPot(potSize)
+    renderBets()
     renderStacks()
     console.log 'POTSIZE ',potSize
 
   calls: (amount) ->
-    @stackSize -= amount
-    potSize += amount
+    @stackSize -= (amount)
+    potSize += (amount)
+    @currentBet = amount
+    renderBets()
     renderPot(potSize)
+    renderStacks()
     
+hero = new Player defaultStackSize, 0
+villain = new Player defaultStackSize, 0
 
-random = 0
-
-hero = new Player defaultStackSize, random
-villain = new Player defaultStackSize, random
