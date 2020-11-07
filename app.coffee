@@ -2,10 +2,18 @@
 potDOM = document.querySelector('.pot')
 action_btn = document.querySelector(".action-btn")
 button_bar = document.querySelector('.button-bar')
+fold_btn = document.querySelector(".fold")
+check_call_btn = document.querySelector(".check-call")
+bet_raise_btn = document.querySelector(".bet-raise")
+hero_dealer = document.querySelector(".hero-dealer")
+hero_current_bet = document.querySelector(".hero-current-bet")
 heroCard1DOM = document.querySelector('#hero-card1')
 heroCard2DOM = document.querySelector('#hero-card2')
 heroStrength = document.querySelector('.hero-strength')
 heroStack = document.querySelector('.hero-stack')
+hero_dealer = document.querySelector(".hero-dealer")
+villain_dealer = document.querySelector(".villain-dealer")
+villain_current_bet = document.querySelector(".villain-current-bet")
 villainStack = document.querySelector('.villain-stack')
 villainCard1DOM = document.querySelector('#villain-card1')
 villainCard2DOM = document.querySelector('#villain-card2')
@@ -28,69 +36,228 @@ villainCards = []
 button_bar.style.visibility = 'hidden'
 potSize = 0
 
-# CARD DECK
-deck = [
-    #hearts
-    { value: '2H', rank: 2},
-    { value: '3H', rank: 3},
-    { value: '4H', rank: 4},
-    { value: '5H', rank: 5},
-    { value: '6H', rank: 6},
-    { value: '7H', rank: 7},
-    { value: '8H', rank: 8},
-    { value: '9H', rank: 9},
-    { value: '0H', rank: 10},
-    { value: 'JH', rank: 11},
-    { value: 'QH', rank: 12},
-    { value: 'KH', rank: 13},
-    { value: 'AH', rank: 14},
-    #clubs
-    { value: '2C', rank: 2},
-    { value: '3C', rank: 3},
-    { value: '4C', rank: 4},
-    { value: '5C', rank: 5},
-    { value: '6C', rank: 6},
-    { value: '7C', rank: 7},
-    { value: '8C', rank: 8},
-    { value: '9C', rank: 9},
-    { value: '0C', rank: 10},
-    { value: 'JC', rank: 11},
-    { value: 'QC', rank: 12},
-    { value: 'KC', rank: 13},
-    { value: 'AC', rank: 14},
-    #spades
-    { value: '2S', rank: 2},
-    { value: '3S', rank: 3},
-    { value: '4S', rank: 4},
-    { value: '5S', rank: 5},
-    { value: '6S', rank: 6},
-    { value: '7S', rank: 7},
-    { value: '8S', rank: 8},
-    { value: '9S', rank: 9},
-    { value: '0S', rank: 10},
-    { value: 'JS', rank: 11},
-    { value: 'QS', rank: 12},
-    { value: 'KS', rank: 13},
-    { value: 'AS', rank: 14},
-    #diamonds
-    { value: '2D', rank: 2},
-    { value: '3D', rank: 3},
-    { value: '4D', rank: 4},
-    { value: '5D', rank: 5},
-    { value: '6D', rank: 6},
-    { value: '7D', rank: 7},
-    { value: '8D', rank: 8},
-    { value: '9D', rank: 9},
-    { value: '0D', rank: 10},
-    { value: 'JD', rank: 11},
-    { value: 'QD', rank: 12},
-    { value: 'KD', rank: 13},
-    { value: 'AD', rank: 14},
-] 
+# CREATE CARD DECK
+getNewDeck = ->
+  myNewDeck = [
+    {
+      value: '2H'
+      rank: 2
+    }
+    {
+      value: '3H'
+      rank: 3
+    }
+    {
+      value: '4H'
+      rank: 4
+    }
+    {
+      value: '5H'
+      rank: 5
+    }
+    {
+      value: '6H'
+      rank: 6
+    }
+    {
+      value: '7H'
+      rank: 7
+    }
+    {
+      value: '8H'
+      rank: 8
+    }
+    {
+      value: '9H'
+      rank: 9
+    }
+    {
+      value: '0H'
+      rank: 10
+    }
+    {
+      value: 'JH'
+      rank: 11
+    }
+    {
+      value: 'QH'
+      rank: 12
+    }
+    {
+      value: 'KH'
+      rank: 13
+    }
+    {
+      value: 'AH'
+      rank: 14
+    }
+    {
+      value: '2C'
+      rank: 2
+    }
+    {
+      value: '3C'
+      rank: 3
+    }
+    {
+      value: '4C'
+      rank: 4
+    }
+    {
+      value: '5C'
+      rank: 5
+    }
+    {
+      value: '6C'
+      rank: 6
+    }
+    {
+      value: '7C'
+      rank: 7
+    }
+    {
+      value: '8C'
+      rank: 8
+    }
+    {
+      value: '9C'
+      rank: 9
+    }
+    {
+      value: '0C'
+      rank: 10
+    }
+    {
+      value: 'JC'
+      rank: 11
+    }
+    {
+      value: 'QC'
+      rank: 12
+    }
+    {
+      value: 'KC'
+      rank: 13
+    }
+    {
+      value: 'AC'
+      rank: 14
+    }
+    {
+      value: '2S'
+      rank: 2
+    }
+    {
+      value: '3S'
+      rank: 3
+    }
+    {
+      value: '4S'
+      rank: 4
+    }
+    {
+      value: '5S'
+      rank: 5
+    }
+    {
+      value: '6S'
+      rank: 6
+    }
+    {
+      value: '7S'
+      rank: 7
+    }
+    {
+      value: '8S'
+      rank: 8
+    }
+    {
+      value: '9S'
+      rank: 9
+    }
+    {
+      value: '0S'
+      rank: 10
+    }
+    {
+      value: 'JS'
+      rank: 11
+    }
+    {
+      value: 'QS'
+      rank: 12
+    }
+    {
+      value: 'KS'
+      rank: 13
+    }
+    {
+      value: 'AS'
+      rank: 14
+    }
+    {
+      value: '2D'
+      rank: 2
+    }
+    {
+      value: '3D'
+      rank: 3
+    }
+    {
+      value: '4D'
+      rank: 4
+    }
+    {
+      value: '5D'
+      rank: 5
+    }
+    {
+      value: '6D'
+      rank: 6
+    }
+    {
+      value: '7D'
+      rank: 7
+    }
+    {
+      value: '8D'
+      rank: 8
+    }
+    {
+      value: '9D'
+      rank: 9
+    }
+    {
+      value: '0D'
+      rank: 10
+    }
+    {
+      value: 'JD'
+      rank: 11
+    }
+    {
+      value: 'QD'
+      rank: 12
+    }
+    {
+      value: 'KD'
+      rank: 13
+    }
+    {
+      value: 'AD'
+      rank: 14
+    }
+  ]
+  myNewDeck
 
-# DEALER ACTIONS 
+
+
+deck = getNewDeck()
+
+# CARD LOGIC
 dealCards = ->
     # Villain cards
+    villainCards = []
     cardId = Math.floor(Math.random() * deck.length)
     villainCards.push(deck[cardId])
     deck.splice(cardId, 1)
@@ -99,6 +266,7 @@ dealCards = ->
     deck.splice(cardId, 1)
 
     # Hero cards
+    heroCards = []
     cardId = Math.floor(Math.random() * deck.length)
     heroCards.push(deck[cardId])
     deck.splice(cardId, 1)
@@ -111,15 +279,6 @@ dealCards = ->
     console.log 'villains cards: ', villainCards
     console.log 'Heros cards: ',heroCards
     console.log 'cards left: ',deck.length
-
-renderPlayerCards = ->
-    #render villain vards
-    villainCard1DOM.src =  "assets/#{villainCards[0].value}.png"
-    villainCard2DOM.src =  "assets/#{villainCards[1].value}.png"
-
-    #render Hero cards
-    heroCard1DOM.src = "assets/#{heroCards[0].value}.png"
-    heroCard2DOM.src = "assets/#{heroCards[1].value}.png"
 
 
 dealFlop = ->
@@ -135,7 +294,6 @@ dealFlop = ->
     boardCard3.src = "assets/#{board[2].value}.png"
     console.log 'flop dealet, det er ' + deck.length + ' kort igjen'
 
-
 dealTurn = ->
     cardId = Math.floor(Math.random() * deck.length)
     card = deck[cardId]
@@ -143,7 +301,6 @@ dealTurn = ->
     deck.splice(cardId, 1)
     boardCard4.src = "assets/#{board[3].value}.png"
     console.log 'turn dealet, det er ' + deck.length + ' kort igjen'
-
 
 dealRiver = ->
     cardId = Math.floor(Math.random() * deck.length)
@@ -153,11 +310,12 @@ dealRiver = ->
     boardCard5.src = "assets/#{board[4].value}.png"
     console.log 'river dealet, det er ' + deck.length + ' kort igjen'
 
-
 endHand = ->
     console.log 'ending hand'
 
+#
 # GET HAND-STRENGTH INFORMATION
+#
 getHandStrength = (playerCards, board) ->
     handStrength = ['']
     # get the hand
@@ -291,6 +449,11 @@ hasStraight = (hand) ->
             else  
                 return ' '
 
+updateHandStrengths = ->
+    heroStrength.innerHTML = getHandStrength(heroCards, board)
+    villainStrength.innerHTML = getHandStrength(villainCards, board)
+##
+
 # CREATE CUSTOM FLOP
 # testHeroHand = [ deck[0], deck[13] ]
 # testBoard = [ deck[26], deck[30], deck[1], deck[14], deck[22]]
@@ -298,59 +461,102 @@ hasStraight = (hand) ->
 # console.log 'HERO', testBoard
 # handStrength(testHeroHand, testBoard)
 
-#dealCards()
-#dealFlop()
-#dealTurn()
-# dealRiver()
 
-
-updateHandStrengths = ->
-    heroStrength.innerHTML = getHandStrength(heroCards, board)
-    villainStrength.innerHTML = getHandStrength(villainCards, board)
-
-# updateStackSizes = ->
-#     heroStack.innerHTML = heroStackSize + '$'
-#     villainStack.innerHTML = villainStackSize + '$'
-
+# RENDERING
 renderHeroStack = (stack) ->
     heroStack.innerHTML = '$' + stack 
 renderVillainStack = (stack) ->
     villainStack.innerHTML = '$' + stack 
+renderHeroCurrentBet = (betSize) ->
+    hero_current_bet.innerHTML = '$' + betSize
+renderVillainCurrentBet = (betSize) ->
+    villain_current_bet.innerHTML = '$' + betSize
 
-# CREATE PLAYER CLASSES
-class Player
-  constructor: (@stackSize) ->
+renderDealerBtn = (player) ->
+    if player is 'hero' 
+        hero_dealer.innerHTML = 'D'
+        villain_dealer.innerHTML = ''
+    else
+        villain_dealer.innerHTML = 'D'
+        hero_dealer.innerHTML = ''
 
-  paySmallBlind: ->
-    console.log 'paying small blind'
-    @stackSize -= 1
-    heroStack
+renderResetFlop = ->
+    boardCard1.src = ""
+    boardCard2.src = ""
+    boardCard3.src = ""
+    boardCard4.src = ""
+    boardCard5.src = ""
 
-  payBigBlind: ->
-    console.log 'paying big blind'
-    @stackSize -= 2
+renderPlayerCards = ->
+    #render villain vards
+    villainCard1DOM.src =  "assets/#{villainCards[0].value}.png"
+    villainCard2DOM.src =  "assets/#{villainCards[1].value}.png"
 
-  getStackSize: ->
-    return @stackSize  
+    #render Hero cards
+    heroCard1DOM.src = "assets/#{heroCards[0].value}.png"
+    heroCard2DOM.src = "assets/#{heroCards[1].value}.png"
+    
 
-hero = new Player (defaultStackSize)
-villain = new Player (defaultStackSize)
+# ACTIONS LOGIC
+heroAct = (currentStreet, potSize, facingAction) ->
+    # PRE-FLOP
+        
 
+villainAct = (currentStreet, potSize, facingAction) ->
+    setTimeout (->
+         # AT NEW HAND
+        if facingAction is 0
+            #rand = Math.random() * 100
+            rand = 20
+            console.log 'RANDOM ', rand   
+            if rand < 33
+                console.log 'checking'
+                renderHeroStack(hero.getStackSize())
+                renderVillainStack(villain.getStackSize())
+                isHerosTurn = true
+                button_bar.style.visibility = 'visible'
+            else if rand > 33 && rand < 66
+                console.log 'betting'
+            else    
+                console.log 'raising'
+    ), 2000
+   
+
+villainChecks = ->
+    
+    
 
 # GAME TREE
-
 nextAction = ->
     # PRE HAND
     if currentStreet is 'new-hand'
         dealCards()
+        potSize = 3
+        potDOM.innerHTML = 'Pot: $' + potSize
+        # HERO IS DEALER
         if heroIsDealer is true 
+            renderDealerBtn('hero')
             button_bar.style.visibility = 'visible'
             hero.paySmallBlind()
             villain.payBigBlind()
+            renderHeroCurrentBet(1)
+            renderVillainCurrentBet(2)
             renderHeroStack(hero.getStackSize())
             renderVillainStack(villain.getStackSize())
-            potSize = 3
-            potDOM.innerHTML = 'Pot: $' + potSize
+        # VILLAIN IS DEALER
+        else 
+            console.log 'VILLAIN ER DEALER'
+            renderDealerBtn(villain)
+            button_bar.style.visibility = 'hidden'
+            hero.payBigBlind()
+            villain.paySmallBlind()
+            renderHeroCurrentBet(2)
+            renderVillainCurrentBet(1)
+            isHerosTurn = false
+            facingAction = 0
+            villainAct(currentStreet, potSize, facingAction)
+            
+        #next street
         currentStreet = 'pre-flop'
 
     # PRE-FLOP
@@ -375,6 +581,44 @@ nextAction = ->
     else if currentStreet is 'river'
         endHand()
 
+renderPot = ->
+
+heroFold = ->
+    villain.winsPot()
+    board = []
+    renderResetFlop()
+    currentStreet = 'new-hand'
+    deck = getNewDeck()
+    heroIsDealer = !heroIsDealer
+    nextAction()
+
+
 
 action_btn.addEventListener 'click', nextAction
+fold_btn.addEventListener 'click', heroFold
+#check_call_btn.addEventListener 'click', check_call
+#bet_raise_btn.addEventListener 'click', bet_raise
 
+# CREATE PLAYER CLASSES
+class Player
+  constructor: (@stackSize) ->
+
+  paySmallBlind: ->
+    console.log 'paying small blind'
+    @stackSize -= 1
+    heroCurrentBet = 1
+
+  payBigBlind: ->
+    console.log 'paying big blind'
+    @stackSize -= 2
+
+  getStackSize: ->
+    return @stackSize  
+
+  winsPot: ->
+    @stackSize += potSize
+    potSize = 0
+    renderVillainStack(@stackSize)
+    renderPot()
+hero = new Player (defaultStackSize)
+villain = new Player (defaultStackSize)
