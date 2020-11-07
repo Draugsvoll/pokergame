@@ -9,6 +9,8 @@
 <body>
 
     <div class="wrapper">
+
+        <!-- VILLAIN -->
         <div class="opponent">
             <div><img src="" alt=""></div>
             <div>Villain</div>
@@ -20,7 +22,10 @@
             <div class="villain-strength"></div>
         </div>
     
+        <!-- TABLE -->
         <div class="table">
+            <div class="villain-dealer"></div>
+            <div class="villain-current-bet"></div>
             <div class="pot"></div>
             <img id="board-card1" src='' alt="">
             <img id="board-card2" src='' alt="">
@@ -29,8 +34,14 @@
             <img id="board-card5" src='' alt="">
             <!-- Action btn -->
             <div><button class="action-btn">Next Action</button></div>
+            <!-- HERO GRAPHIC ON TABLE -->
+            <div class="hero-table-graph">
+                <div class="hero-current-bet"></div>
+                <div class="hero-dealer"></div>
+            </div>
         </div>
     
+        <!-- HERO -->
         <div class="hero-container">
             <div class="hero">
                 <div class="hero-strength"></div>
@@ -41,14 +52,16 @@
                 <div class="name">Hero</div>
                 <div class="hero-stack"></div>
             </div>
-            
         </div>
+        
+        <!-- BUTTON BAR -->
         <div class="button-bar">
-            <div><button>Check/Fold</button></div>
-            <div><button>Check/Call</button></div>
-            <div><button>Bet/Raise</button></div>
+            <div><button class="fold">Fold</button></div>
+            <div><button class="check-call">Check/Call</button></div>
+            <div><button class="bet-raise">Bet/Raise</button></div>
         </div>
     </div>
+
 
     <!-- <script src="bundled.js"></script> -->
     <script src="app.js"></script>

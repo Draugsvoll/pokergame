@@ -30,6 +30,20 @@ img {
     max-width: 95px;
 }
 
+#villain-card1, #villain-card2, #hero-card1, #hero-card2  {
+    width: 70px;
+}
+
+
+.hero-current-bet, .villain-current-bet {
+    margin-top: 15px;
+}
+
+
+
 .action-btn {
     padding: 15px 25px;
+}
+
+.hero-table-graph {
 }
