@@ -30,11 +30,10 @@ boardCard5 = document.querySelector('#board-card5')
 
 
 # variables
-currentStreet = 'new-hand'
+currentStreet = 0
 defaultStackSize = 200
 VillainStackSize = 200
-heroIsDealer = true;
-isHerosTurn = true;
+heroIsDealer = false;
 board = []
 heroCards = []
 villainCards = []
@@ -261,6 +260,8 @@ deck = getNewDeck()
 
 # CARD LOGIC
 dealCards = ->
+    currentStreet++
+
     # Villain cards
     villainCards = []
     cardId = Math.floor(Math.random() * deck.length)
@@ -287,6 +288,9 @@ dealCards = ->
 
 
 dealFlop = ->
+    currentStreet++
+    hero.clearCurrentBet()
+    villain.clearCurrentBet()
     i = 3
     while i > 0
         cardId = Math.floor(Math.random() * deck.length)
@@ -300,6 +304,9 @@ dealFlop = ->
     console.log 'flop dealet, det er ' + deck.length + ' kort igjen'
 
 dealTurn = ->
+    currentStreet++
+    hero.clearCurrentBet()
+    villain.clearCurrentBet()
     cardId = Math.floor(Math.random() * deck.length)
     card = deck[cardId]
     board.push(card)
@@ -472,12 +479,12 @@ renderPot = (amount) ->
     potDOM.innerHTML = '$'+amount
 
 renderButtons = (facingBet) ->
-    facingAmount = facingBet - hero.getCurrentBet()
-    if facingAmount is 0
+    if facingBet is 0
         fold_btn.innerHTML = 'Fold'
         check_call_btn.innerHTML = 'Check'
         bet_raise_btn.innerHTML = 'Bet'
     else 
+        facingAmount = facingBet - hero.getCurrentBet()
         fold_btn.innerHTML = 'Fold'
         check_call_btn.innerHTML = 'Call $' + facingAmount
         bet_raise_btn.innerHTML = 'Raise $' + facingAmount * 2
@@ -492,9 +499,14 @@ renderStacks = ->
 renderBets = ->
     heroCurrentBet = hero.getCurrentBet()
     villainCurrentBet = villain.getCurrentBet()
-    hero_current_bet.innerHTML = '$' + heroCurrentBet
-    villain_current_bet.innerHTML = '$' + villainCurrentBet
+    if heroCurrentBet > 0 
+        hero_current_bet.innerHTML = '$' + heroCurrentBet
+    if villainCurrentBet > 0 
+        villain_current_bet.innerHTML = '$' + villainCurrentBet
 
+clearBets = ->
+    hero_current_bet.innerHTML = ''
+    villain_current_bet.innerHTML = ''
 
 renderDealerBtn = (player) ->
     if player is 'hero' 
@@ -524,100 +536,73 @@ renderPlayerCards = ->
 #
 # VILLAIN LOGIC (ACTIONS) #
 #
-villainAct = (currentStreet, potSize, isDealer) ->
+villainAct =  ->
     renderStacks()
     villainActingText = ''
     villainActing.innerHTML = 'Villain is acting..'
+    isVillainDealer = !heroIsDealer
+    console.log 'IS VILLAIN DEALER ', isVillainDealer
+    console.log 'IS STREET FLOP? ', currentStreet
     setTimeout (->
-        # Villain Acts First Pre-flop
-        if currentStreet is 'new-hand'
-            #rand = Math.random() * 100
-            rand = 50
-            console.log 'RANDOM ', rand   
-            if rand < 33
-                console.log 'checking'
-            else if rand > 33 && rand < 66
-                console.log 'betting 10$'
-                betAmount = 10
-                villainActingText = 'Villain bets ' + betAmount
-                villain.bets(10)
-                renderButtons(betAmount)
-            else    
-                console.log 'raising'
+        # PRE-FLOP
+        if currentStreet is 1
+            if isVillainDealer is true
+                #rand = Math.random() * 100
+                rand = 50
+                console.log 'RANDOM ', rand   
+                if rand < 33
+                    console.log 'checking'
+                else if rand > 33 && rand < 66
+                    console.log 'betting 10$'
+                    betAmount = 10
+                    villainActingText = 'Villain bets ' + betAmount
+                    villain.bets(10)
+                    renderButtons(betAmount)
+                else    
+                    console.log 'raising'
         # Villain Acts Second Pre-flop
-        else if currentStreet is 'pre-flop'
+        else if currentStreet is 1
             #rand = Math.random() * 100
             rand = 50
             console.log 'RANDOM ', rand   
             if rand < 33
                 console.log 'folding'
             else if rand > 33 && rand < 66
-                amountToCall = potSize-villain.getCurrentBet()
-                console.log 'Villain has to call ' + amountToCall
+                console.log 'Villain has to call ' + hero.getCurrentBet()
                 villain.calls(amountToCall)
             else    
                 console.log 'raising'
+        # FLOP
+        else if currentStreet is 2
+            if hero.getCurrentBet() is 0
+                # villain checked to on flop
+                if isVillainDealer is true 
+                    #rand = Math.random() * 100
+                    rand = 20
+                    console.log 'RANDOM ', rand   
+                    if rand < 33
+                        console.log 'Villain checked the flop'
+                        villainActingText = 'Villain checked'
+                    else if rand > 33 && rand < 66
+                        console.log 'betting 10$'
+                        betAmount = 10
+                        villainActingText = 'Villain bets ' + betAmount
+                        villain.bets(10)
+                        renderButtons(betAmount)
+                    else    
+                        console.log 'raising'
+            else 
+                # villain faces a bet on flop
+                rand = 50
+                console.log 'Villain has to call ', hero.getCurrentBet()
+                villain.calls(hero.getCurrentBet())
+                dealTurn()
+
+
         renderStacks()
-        isHerosTurn = true
         button_bar.style.visibility = 'visible'
         villainActing.innerHTML = villainActingText
     ), 2000
-    
-
-
-# GAME TREE
-nextAction = ->
-    # PRE HAND
-    if currentStreet is 'new-hand'
-        dealCards()
-        renderButtons(0)
-        potSize = 3
-        potDOM.innerHTML = 'Pot: $' + potSize
-        # HERO IS DEALER
-        if heroIsDealer is true 
-            renderDealerBtn('hero')
-            button_bar.style.visibility = 'visible'
-            hero.paySmallBlind()
-            villain.payBigBlind()
-            renderBets()
-            renderStacks()
-        # VILLAIN IS DEALER
-        else 
-            console.log 'VILLAIN ER DEALER'
-            renderDealerBtn(villain)
-            button_bar.style.visibility = 'hidden'
-            hero.payBigBlind()
-            villain.paySmallBlind()
-            renderBets()
-            isHerosTurn = false
-            isDealer = !heroIsDealer
-            villainAct(currentStreet, potSize, isDealer)
-            
-        #next street
-        currentStreet = 'pre-flop'
-
-    # PRE-FLOP
-    else if currentStreet is 'pre-flop'
-        dealFlop()
-        updateHandStrengths()
-        currentStreet = 'flop'
-
-    # FLOP
-    else if currentStreet is 'flop'
-        dealTurn()
-        updateHandStrengths()
-        currentStreet = 'turn'
-
-    # TURN
-    else if currentStreet is 'turn'
-        dealRiver()
-        updateHandStrengths()
-        currentStreet = 'river'
-
-    # RIVER
-    else if currentStreet is 'river'
-        endHand()
-# GAME-TREE
 
 #
 # HERO BUTTONS (ACTION LOGIC) #
@@ -626,21 +611,29 @@ fold = ->
     villain.winsPot()
     board = []
     renderResetFlop()
-    currentStreet = 'new-hand'
+    currentStreet = 0
     deck = getNewDeck()
     heroIsDealer = !heroIsDealer
-    nextAction()
+    startHand()
 
 betRaise = ->
     hero.bets(50)
+    villainAct()
+
 
 checkCall = ->
     facingBet = villain.getCurrentBet() - hero.getCurrentBet()
-    console.log 'Calling bet :', facingBet
-    hero.calls(facingBet)
+    if facingBet is 0
+        villainAct()
+        console.log 'RUNNING BET 0 '
+    else
+        hero.calls(facingBet)
+        console.log 'Calling bet :', facingBet
+        console.log 'potSize ', potSize
+        dealFlop()
+        renderButtons(0)
 
 
-action_btn.addEventListener 'click', nextAction
 fold_btn.addEventListener 'click', fold
 check_call_btn.addEventListener 'click', checkCall
 bet_raise_btn.addEventListener 'click', betRaise
@@ -666,6 +659,10 @@ class Player
 
   getCurrentBet: ->
     return @currentBet
+
+  clearCurrentBet: ->
+    @currentBet = 0
+    clearBets()
 
   winsPot: ->
     @stackSize += potSize
@@ -694,3 +691,83 @@ class Player
 hero = new Player defaultStackSize, 0
 villain = new Player defaultStackSize, 0
 
+# # GAME TREE
+# nextAction = ->
+#     # PRE HAND
+#     if currentStreet is 0
+#         dealCards()
+#         renderButtons(0)
+#         potSize = 3
+#         potDOM.innerHTML = 'Pot: $' + potSize
+#         # HERO IS DEALER
+#         if heroIsDealer is true 
+#             renderDealerBtn('hero')
+#             button_bar.style.visibility = 'visible'
+#             hero.paySmallBlind()
+#             villain.payBigBlind()
+#             renderBets()
+#             renderStacks()
+#         # VILLAIN IS DEALER
+#         else 
+#             console.log 'VILLAIN ER DEALER'
+#             renderDealerBtn(villain)
+#             button_bar.style.visibility = 'hidden'
+#             hero.payBigBlind()
+#             villain.paySmallBlind()
+#             renderBets()
+#             isDealer = !heroIsDealer
+#             villainAct(currentStreet, potSize, isDealer)
+            
+#         #next street
+#         currentStreet = 1
+
+#     # PRE-FLOP
+#     else if currentStreet is 1
+#         dealFlop()
+#         updateHandStrengths()
+#         currentStreet = 2
+
+#     # FLOP
+#     else if currentStreet is 2
+#         dealTurn()
+#         updateHandStrengths()
+#         currentStreet = 3
+
+#     # TURN
+#     else if currentStreet is 3
+#         dealRiver()
+#         updateHandStrengths()
+#         currentStreet = 4
+
+#     # RIVER
+#     else if currentStreet is 4
+#         endHand()
+# # GAME-TREE
+
+#action_btn.addEventListener 'click', nextAction
+
+startHand = ->
+    currentStreet = 0
+    dealCards()
+    renderButtons(0)
+    potSize = 3
+    potDOM.innerHTML = 'Pot: $' + potSize
+    # HERO IS DEALER
+    if heroIsDealer is true 
+        renderDealerBtn('hero')
+        button_bar.style.visibility = 'visible'
+        hero.paySmallBlind()
+        villain.payBigBlind()
+        renderBets()
+        renderStacks()
+    # VILLAIN IS DEALER
+    else 
+        console.log 'VILLAIN ER DEALER'
+        renderDealerBtn(villain)
+        button_bar.style.visibility = 'hidden'
+        hero.payBigBlind()
+        villain.paySmallBlind()
+        renderBets()
+        villainAct()
+
+startHand()
