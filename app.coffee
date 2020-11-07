@@ -1,14 +1,14 @@
-# DOM hooks
-potDOM = document.querySelector('.pot')
+# DOM HOOKS #
+# buttons
 action_btn = document.querySelector(".action-btn")
 button_bar = document.querySelector('.button-bar')
 fold_btn = document.querySelector(".fold")
 check_call_btn = document.querySelector(".check-call")
 bet_raise_btn = document.querySelector(".bet-raise")
-hero_dealer = document.querySelector(".hero-dealer")
 hero_current_bet = document.querySelector(".hero-current-bet")
-heroCard1DOM = document.querySelector('#hero-card1')
-heroCard2DOM = document.querySelector('#hero-card2')
+# graphics
+potDOM = document.querySelector('.pot')
+hero_dealer = document.querySelector(".hero-dealer")
 heroStrength = document.querySelector('.hero-strength')
 heroStack = document.querySelector('.hero-stack')
 hero_dealer = document.querySelector(".hero-dealer")
@@ -18,6 +18,10 @@ villainStack = document.querySelector('.villain-stack')
 villainCard1DOM = document.querySelector('#villain-card1')
 villainCard2DOM = document.querySelector('#villain-card2')
 villainStrength = document.querySelector('.villain-strength')
+villainActing = document.querySelector(".villain-acting")
+# cards
+heroCard1DOM = document.querySelector('#hero-card1')
+heroCard2DOM = document.querySelector('#hero-card2')
 boardCard1 = document.querySelector('#board-card1')
 boardCard2 = document.querySelector('#board-card2')
 boardCard3 = document.querySelector('#board-card3')
@@ -28,6 +32,7 @@ boardCard5 = document.querySelector('#board-card5')
 # variables
 currentStreet = 'new-hand'
 defaultStackSize = 200
+VillainStackSize = 200
 heroIsDealer = true;
 isHerosTurn = true;
 board = []
@@ -463,14 +468,19 @@ updateHandStrengths = ->
 
 
 # RENDERING
-renderHeroStack = (stack) ->
-    heroStack.innerHTML = '$' + stack 
-renderVillainStack = (stack) ->
-    villainStack.innerHTML = '$' + stack 
-renderHeroCurrentBet = (betSize) ->
-    hero_current_bet.innerHTML = '$' + betSize
-renderVillainCurrentBet = (betSize) ->
-    villain_current_bet.innerHTML = '$' + betSize
+
+renderStacks = ->
+    heroStackSize = hero.getStackSize()
+    villainStackSize = villain.getStackSize()
+    heroStack.innerHTML = '$' + heroStackSize
+    villainStack.innerHTML = '$' + villainStackSize
+
+renderBets = ->
+    heroCurrentBet = hero.getCurrentBet()
+    villainCurrentBet = villain.getCurrentBet()
+    hero_current_bet.innerHTML = '$' + heroCurrentBet
+    villain_current_bet.innerHTML = '$' + villainCurrentBet
+
 
 renderDealerBtn = (player) ->
     if player is 'hero' 
@@ -502,27 +512,45 @@ heroAct = (currentStreet, potSize, facingAction) ->
     # PRE-FLOP
         
 
-villainAct = (currentStreet, potSize, facingAction) ->
+villainAct = (currentStreet, potSize, isDealer) ->
+    renderStacks()
+    villainActing.style.visibility = 'visible'
     setTimeout (->
-         # AT NEW HAND
-        if facingAction is 0
+        # Villain Acts First Pre-flop
+        if currentStreet is 'new-hand'
             #rand = Math.random() * 100
-            rand = 20
+            rand = 50
             console.log 'RANDOM ', rand   
             if rand < 33
                 console.log 'checking'
-                renderHeroStack(hero.getStackSize())
-                renderVillainStack(villain.getStackSize())
-                isHerosTurn = true
-                button_bar.style.visibility = 'visible'
             else if rand > 33 && rand < 66
-                console.log 'betting'
+                console.log 'betting 10$'
+                villain.bets(10)
             else    
                 console.log 'raising'
+        # Villain Acts Second Pre-flop
+        else if currentStreet is 'pre-flop'
+            #rand = Math.random() * 100
+            rand = 50
+            console.log 'RANDOM ', rand   
+            if rand < 33
+                console.log 'folding'
+            else if rand > 33 && rand < 66
+                amountToCall = potSize-villain.getCurrentBet()
+                console.log 'Villain has to call ' + amountToCall
+                villain.calls(amountToCall)
+            else    
+                console.log 'raising'
+
+        renderStacks()
+        isHerosTurn = true
+        button_bar.style.visibility = 'visible'
+        villainActing.style.visibility = 'hidden'
     ), 2000
    
 
 villainChecks = ->
+villaiBets = (amount) ->
     
     
 
@@ -539,10 +567,8 @@ nextAction = ->
             button_bar.style.visibility = 'visible'
             hero.paySmallBlind()
             villain.payBigBlind()
-            renderHeroCurrentBet(1)
-            renderVillainCurrentBet(2)
-            renderHeroStack(hero.getStackSize())
-            renderVillainStack(villain.getStackSize())
+            renderBets()
+            renderStacks()
         # VILLAIN IS DEALER
         else 
             console.log 'VILLAIN ER DEALER'
@@ -550,11 +576,10 @@ nextAction = ->
             button_bar.style.visibility = 'hidden'
             hero.payBigBlind()
             villain.paySmallBlind()
-            renderHeroCurrentBet(2)
-            renderVillainCurrentBet(1)
+            renderBets()
             isHerosTurn = false
-            facingAction = 0
-            villainAct(currentStreet, potSize, facingAction)
+            isDealer = !heroIsDealer
+            villainAct(currentStreet, potSize, isDealer)
             
         #next street
         currentStreet = 'pre-flop'
@@ -580,8 +605,10 @@ nextAction = ->
     # RIVER
     else if currentStreet is 'river'
         endHand()
+# GAME-TREE
 
-renderPot = ->
+renderPot = (amount) -> 
+    potDOM.innerHTML = '$'+amount
 
 heroFold = ->
     villain.winsPot()
@@ -592,33 +619,58 @@ heroFold = ->
     heroIsDealer = !heroIsDealer
     nextAction()
 
+heroBetRaise = ->
+    hero.bets(50)
 
 
 action_btn.addEventListener 'click', nextAction
 fold_btn.addEventListener 'click', heroFold
 #check_call_btn.addEventListener 'click', check_call
-#bet_raise_btn.addEventListener 'click', bet_raise
+bet_raise_btn.addEventListener 'click', heroBetRaise
 
 # CREATE PLAYER CLASSES
 class Player
-  constructor: (@stackSize) ->
+  constructor: (@stackSize, @currentBet) ->
 
   paySmallBlind: ->
     console.log 'paying small blind'
     @stackSize -= 1
-    heroCurrentBet = 1
+    @currentBet = 1
 
   payBigBlind: ->
     console.log 'paying big blind'
     @stackSize -= 2
+    @currentBet = 2
 
   getStackSize: ->
     return @stackSize  
 
+  getCurrentBet: ->
+    return @currentBet
+
   winsPot: ->
     @stackSize += potSize
     potSize = 0
-    renderVillainStack(@stackSize)
-    renderPot()
-hero = new Player (defaultStackSize)
-villain = new Player (defaultStackSize)
+    renderStacks()
+    renderPot(potSize)
+
+  bets: (amount) ->
+    @stackSize -= amount
+    potSize += amount
+    prevBet = @currentBet
+    @currentBet = amount
+    renderPot(potSize-prevBet)
+    renderBets(amount)
+    renderStacks()
+    console.log 'POTSIZE ',potSize
+
+  calls: (amount) ->
+    @stackSize -= amount
+    potSize += amount
+    renderPot(potSize)
+    
+
+random = 0
+
+hero = new Player defaultStackSize, random
+villain = new Player defaultStackSize, random

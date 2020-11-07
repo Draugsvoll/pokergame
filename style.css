@@ -1,3 +1,7 @@
+body {
+    background: #333;
+}
+
 .wrapper {
     justify-content: center;
     text-align: center;
@@ -39,10 +43,15 @@ img {
     margin-top: 15px;
 }
 
+.villain-acting {
+    visibility: hidden;
+    font-size: 20px;
+}
 
-
-.action-btn {
-    padding: 15px 25px;
+button {
+    width:100px;
+    height: 30px;
+    margin-right: 10px;
 }
 
 .hero-table-graph {
