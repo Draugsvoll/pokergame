@@ -308,6 +308,7 @@ dealFlop = ->
     boardCard2.src = "assets/#{board[1].value}.png"
     boardCard3.src = "assets/#{board[2].value}.png"
     console.log 'flop dealet, det er ' + deck.length + ' kort igjen'
+    renderHandSrengths()
 
 dealTurn = ->
     currentStreet++
@@ -318,6 +319,7 @@ dealTurn = ->
     deck.splice(cardId, 1)
     boardCard4.src = "assets/#{board[3].value}.png"
     console.log 'turn dealet, det er ' + deck.length + ' kort igjen'
+    renderHandSrengths()
 
 dealRiver = ->
     currentStreet++
@@ -328,6 +330,7 @@ dealRiver = ->
     deck.splice(cardId, 1)
     boardCard5.src = "assets/#{board[4].value}.png"
     console.log 'river dealet, det er ' + deck.length + ' kort igjen'
+    renderHandSrengths()
 
 # determine winning hand at end (rank by integers)
 handRank = (hand) ->
@@ -363,6 +366,9 @@ endHand = ->
 
     console.log 'hero hand rank: ', heroHandStrength
     console.log 'villain hand rank: ', villainHandStrength
+
+    console.log 'hero has hand: ', heroHand
+    console.log 'villain has hand: ', villainHand
 
     if heroHandStrength > villainHandStrength
         console.log 'Hero wins with: ', heroHand
@@ -458,7 +464,7 @@ hasPairsOrTripsOrQuads = (hand) ->
                 else
                 i--
     # one pair
-    else if pairs.length is 1 && trips.length is 0 && trips.length is 0
+    else if pairs.length is 1 && trips.length is 0 && quads.length is 0
         pairs[0] += 1
         return 'Pair of ' + pairs[0].toString()
     # two pair
@@ -524,7 +530,6 @@ renderEmptyTableGraphics = ->
     villain.clearCurrentBet()
     hero_current_action.innerHTML = ''
     villainActing.innerHTML = ''
-    renderHandSrengths()
 
 renderEmptyCards = ->
     villainCard1DOM.src =  ""
