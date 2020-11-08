@@ -45,6 +45,7 @@ img {
 }
 
 .villain-acting {
+    visibility: hidden;
     font-size: 25px;
 }
 
