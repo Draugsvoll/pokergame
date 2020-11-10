@@ -40,7 +40,7 @@ body {
 }
 
 .table-text {
-    font-size: 40px;
+    font-size: 30px;
 }
 
 .button-bar {
@@ -59,7 +59,10 @@ body {
 .pot {
     font-size: 17px;
     margin-top: 40px;
-    height: 37px;
+    height: 25px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 img {
@@ -90,8 +93,8 @@ img {
 }
 
 .hero-current-action {
-    font-size: 30px;
-    height: 39px;
+    font-size: 28px;
+    height: 34px;
 }
 
 button {
