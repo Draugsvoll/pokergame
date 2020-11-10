@@ -433,13 +433,16 @@
     console.log('villain has hand: ', villainHand);
     if (heroHandStrength > villainHandStrength) {
       announcementText.innerHTML = 'Hero wins with: ' + heroHand + '<br>' + potSize + '$';
-      return hero.winsPot();
+      hero.winsPot();
     } else if (heroHandStrength < villainHandStrength) {
       announcementText.innerHTML = 'Villain wins with: ' + villainHand + '<br> Pot: ' + potSize + ' $';
-      return villain.winsPot();
+      villain.winsPot();
     } else {
-      return announcementText.innerHTML = 'Split pot with: ' + heroHand;
+      announcementText.innerHTML = 'Split pot with: ' + heroHand;
     }
+    return setTimeout((function() {
+      return startHand();
+    }), 5000);
   };
 
   

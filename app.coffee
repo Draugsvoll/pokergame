@@ -396,6 +396,10 @@ endHand = ->
     else
         announcementText.innerHTML = 'Split pot with: ' + heroHand
 
+    setTimeout ( ->
+        startHand()
+    ), 5000
+
 #
 # GET HAND-STRENGTH INFORMATION
 #
