@@ -2,6 +2,11 @@
     user-select: none;
 }
 
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background: #333;
 }
@@ -17,6 +22,27 @@ body {
     justify-content: center;
 }
 
+.hero-dealer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    font-size: 30px;
+    margin-top: 15px;
+    height: 30px;
+    margin-left: 40%;
+}
+
+.villain-dealer {
+    margin-top:15px;    
+    font-size: 30px;
+    height: 30px;
+    margin-right: 100px;
+}
+
+.table-text {
+    font-size: 40px;
+}
+
 .button-bar {
     display: flex;
     justify-content: center;
@@ -24,14 +50,16 @@ body {
 
 .table {
    width: 600px;
-   height: 400px;
+   height: 450px;
    border: 2px solid black;
    border-radius: 50%;
    margin: 25px auto;
 }
 
 .pot {
-    margin-top: 100px;
+    font-size: 17px;
+    margin-top: 40px;
+    height: 37px;
 }
 
 img {
@@ -40,16 +68,30 @@ img {
 
 #villain-card1, #villain-card2, #hero-card1, #hero-card2  {
     width: 70px;
+    height: 107px;
 }
 
+.villain-strength, .hero-strength {
+    height: 19px;
+}
+
+.hero-stack, .villain-stack {
+    height: 20px;
+}
+
+.card-container {
+    height: 107px;
+}
 
 .hero-current-bet, .villain-current-bet {
-    margin-top: 15px;
+    margin-top: 0px;    
     font-size: 30px;
+    height: 37px;
 }
 
-.villain-acting {
-    font-size: 25px;
+.hero-current-action {
+    font-size: 30px;
+    height: 39px;
 }
 
 button {
@@ -58,3 +100,9 @@ button {
     margin-right: 10px;
 }
 
+.board-container {
+    height: 147px;
+}
+
+.hero-table-graphs, .villain-table-graphs {
+}
