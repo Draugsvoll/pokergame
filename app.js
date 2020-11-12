@@ -73,9 +73,9 @@
   // variables
   currentStreet = 0;
 
-  defaultStackSize = 1000;
+  defaultStackSize = 2000;
 
-  heroIsDealer = true;
+  heroIsDealer = false;
 
   board = [];
 
@@ -475,6 +475,7 @@
     villainCard1DOM.src = `assets/${villainCards[0].value}.png`;
     villainCard2DOM.src = `assets/${villainCards[1].value}.png`;
     villainStrength.style.display = "";
+    villainStrength.style.visibility = "visible";
     // get players hands
     villainHand = getHandStrength(villainCards, board);
     heroHand = getHandStrength(heroCards, board);
@@ -781,12 +782,12 @@
     if (facingBet === 0) {
       fold_btn.innerHTML = 'Fold';
       check_call_btn.innerHTML = 'Check';
-      // button show raise instead of bet if preflop and is dealer
-      if (currentStreet === 0 && facingBet === 0) {
-        return bet_raise_btn.innerHTML = 'Raise $' + (facingBet + 100);
-      } else {
-        return bet_raise_btn.innerHTML = 'Bet $' + (facingBet + 100);
-      }
+      return bet_raise_btn.innerHTML = 'Bet $' + (facingBet + 100);
+    // facing small blind
+    } else if (facingBet === 1) {
+      fold_btn.innerHTML = 'Fold';
+      check_call_btn.innerHTML = 'Call $' + facingBet;
+      return bet_raise_btn.innerHTML = 'Raise $' + 100;
     } else {
       // facing bet
       fold_btn.innerHTML = 'Fold';
@@ -885,7 +886,7 @@
     hero_image.classList.remove("glowing");
     isVillainDealer = !heroIsDealer;
     //rand = Math.random() * 100 + 20
-    rand = 20;
+    rand = 50;
     return setTimeout((function() {
       var betAmount, facingBet, villainActingText;
       
@@ -1167,10 +1168,10 @@
     var facingBet;
     facingBet = villain.getCurrentBet() - hero.getCurrentBet();
     hero_image.classList.remove("glowing");
-    // check/call as dealer preflop
+    // dealer preflop
     if (currentStreet === 1 && heroIsDealer) {
       
-      // calling SB 
+      // call SB 
       if (facingBet === 1) {
         hero.calls(1);
         villainAct();
@@ -1306,31 +1307,33 @@
   villain = new Player(defaultStackSize, 0);
 
   startHand = function() {
-    // new reset stuff
-    hero_current_action.innerHTML = '';
-    hero_current_action.style.visibility = 'visible';
-    hero_current_bet.style.visibility = 'visible';
-    villain_current_bet.style.visibility = 'visible';
-    announcementText.innerHTML = '';
-    announcementText.style.visibility = "hidden";
-    // reset stuff
-    new_hand_btn.style.display = 'none';
-    board = [];
-    renderEmptyHeroCards();
-    renderEmptyVillainCards();
-    renderResetFlop();
+    // reset stuff for new hand
     announcementText.innerHTML = '';
     villainActing.innerHTML = '';
     hero_current_action.innerHTML = '';
     hero_current_bet.innerHTML = '';
     villain_current_bet.innerHTML = '';
     potDOM.innerHTML = '';
+    hero_current_action.innerHTML = '';
+    announcementText.innerHTML = '';
+    heroStrength.innerHTML = '';
+    villainStrength.innerHTML = '';
+    villainStrength.style.visibility = 'hidden';
+    hero_current_action.style.visibility = 'visible';
+    hero_current_bet.style.visibility = 'visible';
+    villain_current_bet.style.visibility = 'visible';
+    announcementText.style.visibility = "hidden";
+    new_hand_btn.style.display = 'none';
+    board = [];
+    renderEmptyHeroCards();
+    renderEmptyVillainCards();
+    renderResetFlop();
     currentStreet = 0;
     
-    // firt animation
+    // deal cards
     return setTimeout((function() {
       dealCards();
-      // second animation
+      // pay blinds
       return setTimeout((function() {
         potSize = 3;
         potDOM.innerHTML = 'Pot: $' + potSize;
@@ -1343,10 +1346,9 @@
           setTimeout((function() {
             renderButtons(villain.getCurrentBet() - hero.getCurrentBet());
             return button_bar.style.visibility = 'visible';
-          }), 500);
+          }), 700);
           return renderStacks();
-        } else {
-          // Pay blinds
+        } else if (!heroIsDealer) {
           renderDealerBtn(villain);
           button_bar.style.visibility = 'hidden';
           hero.payBigBlind();

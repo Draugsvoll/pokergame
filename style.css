@@ -1,6 +1,7 @@
 * {
     user-select: none;
     color: rgba(255, 255, 255, 0.95);
+    /* border: 1px solid yellow; */
 }
 
 body, html {
@@ -33,6 +34,29 @@ body {
     height: 26px;
     margin-left: 40%;
 }
+
+.villain-container {
+    display: flex;
+    width: 1000px;
+    margin:auto;
+    justify-content: center;
+}
+
+.villain-leftbox {
+    width:150px;
+}
+
+.villain-centerbox {
+    width:150px;
+    vertical-align: middle;
+}
+
+.villain-rightbox {
+    width:150px;
+    margin: auto 0;
+    text-align: start;
+}
+
 
 .villain-dealer {
     margin-top:9px;    
@@ -86,7 +110,7 @@ button:hover {
 
 .table {
    width: 600px;
-   height: 450px;
+   height: 425px;
    border: 2px solid black;
    border-radius: 60%;
    margin: 6px auto;
@@ -131,11 +155,11 @@ img {
 
 .card-container-villain {
     /* height: 107px; */
-    height:63px;
+    height: 98px;
 }
 
 .hero-current-bet{
-    margin-top:45px;    
+    margin-top:25px;    
     font-size: 20px;
     height: 37px;
 }
