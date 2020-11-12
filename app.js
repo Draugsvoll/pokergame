@@ -834,8 +834,10 @@
     villainCard1DOM.src = "assets/purple_back.png";
     villainCard2DOM.src = "assets/purple_back.png";
     //render Hero cards
-    heroCard1DOM.src = `assets/${heroCards[0].value}.png`;
-    return heroCard2DOM.src = `assets/${heroCards[1].value}.png`;
+    return setTimeout((function() {
+      heroCard1DOM.src = `assets/${heroCards[0].value}.png`;
+      return heroCard2DOM.src = `assets/${heroCards[1].value}.png`;
+    }), 175);
   };
 
   renderHandSrengths = function() {
@@ -856,23 +858,26 @@
   };
 
   villainFold = function() {
-    // reset stuff for new hand
-    hero.winsPot();
     renderEmptyVillainCards();
     renderVillainFoldText();
-    currentStreet = 0;
-    deck = getNewDeck();
-    heroIsDealer = !heroIsDealer;
     button_bar.style.visibility = 'hidden';
-    // end of hand text
-    emptyTableForAnnouncementText();
-    hero_current_action.innerHTML = 'Fold';
-    announcementText.innerHTML = 'Hero wins: ' + potSize + '$';
     return setTimeout((function() {
-      return startHand();
+      hero.winsPot();
+      // reset stuff for new hand
+      currentStreet = 0;
+      deck = getNewDeck();
+      heroIsDealer = !heroIsDealer;
+      // end of hand text
+      emptyTableForAnnouncementText();
+      hero_current_action.innerHTML = 'Fold';
+      announcementText.innerHTML = 'Hero wins: ' + potSize + '$';
+      return setTimeout((function() {
+        return startHand();
+      }), 2000);
     }), 2000);
   };
 
+  
   //###############
 
   //   VILLAIN BOT 
@@ -884,7 +889,7 @@
     renderStacks();
     button_bar.style.visibility = 'hidden';
     villainActing.style.visibility = "visible";
-    villainActing.innerHTML = 'Villain is acting..';
+    villainActing.innerHTML = 'Acting..';
     hideHeroActionBar = false;
     // glowing effect
     villain_image.className = " glowing";
@@ -904,7 +909,7 @@
           // fold
           if (rand < 33) {
             villainFold();
-            renderVillainFoldText();
+            hideHeroActionBar = true;
           // call
           } else if (rand > 33 && rand < 66) {
             // villain only calls small blind
@@ -921,7 +926,7 @@
                 return dealNextStreet(currentStreet);
               }), 2000);
             }
-            villainActing.innerHTML = 'Villain calls  ';
+            renderVillainCallText();
           // raise
           } else if (rand > 66) {
             betAmount = hero.getCurrentBet() * 2;
@@ -956,6 +961,7 @@
             if (rand < 33) {
               villainFold();
               renderVillainFoldText();
+              hideHeroActionBar = false;
             }
             // call
             if (rand > 33 && rand < 66) {
@@ -982,7 +988,7 @@
         if (hero.getCurrentBet() === 0) {
           if (rand < 33) {
             // villain check -> next street if dealer
-            villainActing.innerHTML = 'Villain checked';
+            renderVillainCheckText();
             if (!heroIsDealer) {
               hideHeroActionBar = true;
               setTimeout((function() {
@@ -1006,6 +1012,7 @@
           if (rand < 33) {
             villainFold();
             renderVillainFoldText();
+            hideHeroActionBar = false;
           } else if (rand < 66) {
             // CALL
             villain.calls(hero.getCurrentBet() - villain.getCurrentBet());
@@ -1031,7 +1038,7 @@
         if (hero.getCurrentBet() === 0) {
           // check
           if (rand < 33) {
-            villainActing.innerHTML = 'Villain checked';
+            renderVillainCheckText();
             if (!heroIsDealer) {
               hideHeroActionBar = true;
               setTimeout((function() {
@@ -1067,7 +1074,7 @@
         if (hero.getCurrentBet() === 0) {
           // check IP
           if (rand < 33 && !heroIsDealer) {
-            villainActing.innerHTML = 'Villain checks';
+            renderVillainCheckText();
             setTimeout((function() {
               return dealNextStreet(currentStreet);
             }), 2000);
@@ -1075,7 +1082,6 @@
             if (heroIsDealer) {
               // check to hero
               renderVillainCheckText();
-              villainActing.innerHTML = 'Villain checks';
             }
           } else if (rand > 33 && rand < 66) {
             betAmount = hero.getCurrentBet();
@@ -1093,6 +1099,7 @@
           if (rand < 33) {
             villainFold();
             renderVillainFoldText();
+            hideHeroActionBar = false;
           } else if (rand < 66) {
             betAmount = hero.getCurrentBet() - villain.getCurrentBet();
             hideHeroActionBar = true;
@@ -1347,7 +1354,7 @@
           setTimeout((function() {
             renderButtons(villain.getCurrentBet() - hero.getCurrentBet());
             return button_bar.style.visibility = 'visible';
-          }), 700);
+          }), 800);
           return renderStacks();
         } else if (!heroIsDealer) {
           renderDealerBtn('villain');
@@ -1357,8 +1364,8 @@
           renderBets();
           return villainAct();
         }
-      }), 700);
-    }), 700);
+      }), 800);
+    }), 800);
   };
 
   new_hand_btn.addEventListener('click', startHand);

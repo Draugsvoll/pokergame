@@ -709,8 +709,10 @@ renderPlayerCards = ->
     villainCard2DOM.src =  "assets/purple_back.png"
 
     #render Hero cards
-    heroCard1DOM.src = "assets/#{heroCards[0].value}.png"
-    heroCard2DOM.src = "assets/#{heroCards[1].value}.png"
+    setTimeout ( -> 
+        heroCard1DOM.src = "assets/#{heroCards[0].value}.png"
+        heroCard2DOM.src = "assets/#{heroCards[1].value}.png"
+    ), 175
 
 renderHandSrengths = ->
     heroStrength.innerHTML = getHandStrength(heroCards, board)
@@ -728,22 +730,26 @@ villainCreateAndMakeBet = (betAmount) ->
     renderBets()
 
 villainFold = ->
-    # reset stuff for new hand
-    hero.winsPot()
     renderEmptyVillainCards()
     renderVillainFoldText()
-    currentStreet = 0
-    deck = getNewDeck()
-    heroIsDealer = !heroIsDealer
     button_bar.style.visibility = 'hidden'
 
-    # end of hand text
-    emptyTableForAnnouncementText()
-    hero_current_action.innerHTML = 'Fold'
-    announcementText.innerHTML = 'Hero wins: ' + potSize + '$'
-    setTimeout ( ->
-        startHand()
+    setTimeout ( -> 
+        hero.winsPot()
+        # reset stuff for new hand
+        currentStreet = 0
+        deck = getNewDeck()
+        heroIsDealer = !heroIsDealer
+
+        # end of hand text
+        emptyTableForAnnouncementText()
+        hero_current_action.innerHTML = 'Fold'
+        announcementText.innerHTML = 'Hero wins: ' + potSize + '$'
+        setTimeout ( ->
+            startHand()
+        ), 2000
     ), 2000
+    
 
 ################
 #
@@ -755,7 +761,7 @@ villainAct =  ->
     renderStacks()
     button_bar.style.visibility = 'hidden'
     villainActing.style.visibility = "visible"
-    villainActing.innerHTML = 'Villain is acting..'
+    villainActing.innerHTML = 'Acting..'
     hideHeroActionBar = false
     # glowing effect
     villain_image.className = " glowing"
@@ -774,7 +780,7 @@ villainAct =  ->
                 # fold
                 if rand < 33
                     villainFold()
-                    renderVillainFoldText()
+                    hideHeroActionBar = true
                 # call
                 else if rand > 33 && rand < 66
                     # villain only calls small blind
@@ -790,7 +796,7 @@ villainAct =  ->
                         setTimeout ( ->
                           dealNextStreet(currentStreet)
                         ), 2000
-                    villainActing.innerHTML = 'Villain calls  '
+                    renderVillainCallText()
                 # raise
                 else if rand > 66   
                         betAmount = hero.getCurrentBet() * 2
@@ -822,6 +828,7 @@ villainAct =  ->
                     if rand < 33
                         villainFold()
                         renderVillainFoldText()
+                        hideHeroActionBar = false
                     # call
                     if rand > 33 && rand < 66
                         villain.calls(hero.getCurrentBet()-villain.getCurrentBet())
@@ -843,7 +850,7 @@ villainAct =  ->
             if hero.getCurrentBet() is 0
                 if rand < 33
                     # villain check -> next street if dealer
-                    villainActing.innerHTML = 'Villain checked'
+                    renderVillainCheckText()
                     if !heroIsDealer
                         hideHeroActionBar = true;
                         setTimeout ( ->
@@ -865,6 +872,7 @@ villainAct =  ->
                 if rand < 33
                     villainFold()
                     renderVillainFoldText()
+                    hideHeroActionBar = false
                 else if rand < 66
                     # CALL
                     villain.calls(hero.getCurrentBet()-villain.getCurrentBet()) 
@@ -887,7 +895,7 @@ villainAct =  ->
             if hero.getCurrentBet() is 0
                 # check
                 if rand < 33
-                    villainActing.innerHTML = 'Villain checked'
+                    renderVillainCheckText()
                     # next street if check as dealer
                     if !heroIsDealer
                         hideHeroActionBar = true;
@@ -922,7 +930,7 @@ villainAct =  ->
             if hero.getCurrentBet() is 0
                 # check IP
                 if rand < 33 && !heroIsDealer
-                    villainActing.innerHTML = 'Villain checks'
+                    renderVillainCheckText()
                     setTimeout ( ->
                             dealNextStreet(currentStreet)
                         ), 2000
@@ -930,7 +938,6 @@ villainAct =  ->
                     if heroIsDealer
                         # check to hero
                         renderVillainCheckText()
-                        villainActing.innerHTML = 'Villain checks'
                 else if rand > 33 && rand < 66
                     betAmount = hero.getCurrentBet()
                     betAmount += 100
@@ -946,6 +953,7 @@ villainAct =  ->
                 if rand < 33
                     villainFold()
                     renderVillainFoldText()
+                    hideHeroActionBar = false
                 else if rand < 66
                     betAmount = hero.getCurrentBet() - villain.getCurrentBet()
                     hideHeroActionBar = true;
@@ -1171,7 +1179,7 @@ startHand = ->
                 setTimeout ( -> 
                     renderButtons(villain.getCurrentBet()-hero.getCurrentBet())
                     button_bar.style.visibility = 'visible'
-                ), 700
+                ), 800
                 renderStacks()
             else if !heroIsDealer
                 renderDealerBtn('villain')
@@ -1180,8 +1188,8 @@ startHand = ->
                 villain.paySmallBlind()
                 renderBets()
                 villainAct()
-        ), 700
-    ), 700
+        ), 800
+    ), 800
 
 new_hand_btn.addEventListener 'click', startHand
 startHand()
