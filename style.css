@@ -1,7 +1,7 @@
 * {
     user-select: none;
     color: rgba(255, 255, 255, 0.95);
-    /* border: 1px solid yellow; */
+    /* border: 1px solid blue; */
 }
 
 body, html {
@@ -30,9 +30,17 @@ body {
     justify-content: center;
     align-items: flex-end;
     font-size: 30px;
-    /* margin-top: 8px; */
     height: 26px;
-    margin-left: 40%;
+    margin-left: 30%;
+    visibility: hidden;
+}
+
+.villain-dealer {
+    margin-top:14px;    
+    font-size: 30px;
+    height: 26px;
+    /* margin-right: 100px; */
+    margin-right: 30%;
 }
 
 .villain-container {
@@ -44,10 +52,12 @@ body {
 
 .villain-leftbox {
     width:150px;
+    margin: auto 0;
+    text-align: end;
 }
 
 .villain-centerbox {
-    width:150px;
+    width:130px;
     vertical-align: middle;
 }
 
@@ -55,15 +65,9 @@ body {
     width:150px;
     margin: auto 0;
     text-align: start;
+
 }
 
-
-.villain-dealer {
-    margin-top:9px;    
-    font-size: 30px;
-    height: 30px;
-    margin-right: 100px;
-}
 
 .villain-table-graphics {
     height:110px;
@@ -81,7 +85,7 @@ body {
 .button-bar {
     display: flex;
     justify-content: center;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
     height: 50px;
 }
 
@@ -99,7 +103,7 @@ button {
 .new-hand-btn {
     display: none;
     margin: auto;
-    margin-top: 15px;
+    margin-top: 25px;
 }
 
 button:hover {
@@ -107,10 +111,14 @@ button:hover {
     border: 1px solid black;
 }
 
+.table-container {
+    margin: auto;
+    height: 350px;
+}
 
 .table {
-   width: 600px;
-   height: 425px;
+   width: 576px;
+   height: 400px;
    border: 2px solid black;
    border-radius: 60%;
    margin: 6px auto;
@@ -118,8 +126,8 @@ button:hover {
 }
 
 .pot {
-    font-size: 15px;
     margin-top: 10px;
+    font-size: 15px;
     height: 26px;
     justify-content: center;
     align-items: center;
@@ -131,16 +139,17 @@ img {
 }
 
 #villain-card1, #villain-card2, #hero-card1, #hero-card2  {
-    width: 70px;
+    width: 60px;
 }
 
 .hero-strength {
     height: 24px;
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .villain-strength {
-    font-size: 18px;
+    font-size: 14px;
+    margin:auto;
 }  
 
 .hero-stack, .villain-stack {
@@ -150,16 +159,17 @@ img {
 
 .card-container-hero {
     /* height: 107px; */
-    height:105px;
+    height:55px;
+    z-index: 10;
 }
 
 .card-container-villain {
     /* height: 107px; */
-    height: 98px;
+    height: 48px;
 }
 
 .hero-current-bet{
-    margin-top:25px;    
+    margin-top:20px;    
     font-size: 20px;
     height: 37px;
 }
@@ -172,7 +182,6 @@ img {
 
 .hero-current-action {
     font-size: 20px;
-    height: 34px;
     visibility: hidden;
 }
 
@@ -185,26 +194,30 @@ img {
 }
 
 
+#board-card1, #board-card2, #board-card3, #board-card4, #board-card5 {
+    height:110px;
+}
+
 .board-container {
-    height: 147px;
+    height: 100px;
 }
 
 #hero-image, #villain-image {
     margin-top: 5px;
     border-radius: 100%;
-    /* background: rgba(0,0,0, 0.3); */
-    border-bottom: 2px solid rgba(0,0,0,0)
+    border: 2px solid rgba(0,0,0,0);
+    z-index: 1000;
 }
 
 .villain-image-container {
-    height: 85px;
+    height: 72px;
 }
 
 
 /* # GLOWING BORDER */
 @-webkit-keyframes glow {
     to {
-         border: 2px solid white;
+         border: 2px solid rgb(255, 255, 255);
     -webkit-box-shadow: 0 0 6px white;
        -moz-box-shadow: 0 0 6px white;
             box-shadow: 0 0 6px white;
@@ -215,12 +228,12 @@ img {
     }
 }
 
-.glowing {
+/* .glowing {
     -webkit-animation: glow 0.8s infinite alternate;  
      -webkit-transition: border 0.8s linear, box-shadow 0.8s linear;
        -moz-transition: border 0.8s linear, box-shadow 0.8s linear;
             transition: border 0.8s linear, box-shadow 0.8s linear;
-}
+} */
 
 input {
     color:white;
