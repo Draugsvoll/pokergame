@@ -47,10 +47,11 @@ body {
 
 
 .table-text {
-    font-size: 24px;
+    font-size: 26px;
     visibility: hidden;
-    /* background: rgba(1, 12, 1, 0.6); */
+    /* background: rgba(2, 23, 2, 0.6); */
     margin:auto;
+    text-shadow: 0 0 1px #6daff0, 0 0 4px #e93547;
 }
 
 .button-bar {
@@ -74,7 +75,7 @@ button {
 .new-hand-btn {
     display: none;
     margin: auto;
-    margin-top: 30px;
+    margin-top: 15px;
 }
 
 button:hover {
@@ -123,13 +124,18 @@ img {
     font-size:18px;
 }
 
-.card-container {
+.card-container-hero {
     /* height: 107px; */
     height:105px;
 }
 
+.card-container-villain {
+    /* height: 107px; */
+    height:63px;
+}
+
 .hero-current-bet{
-    margin-top:10px;    
+    margin-top:45px;    
     font-size: 20px;
     height: 37px;
 }

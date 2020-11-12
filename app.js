@@ -75,7 +75,7 @@
 
   defaultStackSize = 1000;
 
-  heroIsDealer = false;
+  heroIsDealer = true;
 
   board = [];
 
@@ -481,8 +481,7 @@
     // hand strengths output as integer
     villainHandStrength = handRank(villainHand);
     heroHandStrength = handRank(heroHand);
-    console.log('hero has hand: ', heroHand);
-    console.log('villain has hand: ', villainHand);
+    // declare winner
     if (heroHandStrength > villainHandStrength) {
       winner = 'Hero';
       announcement = 'Hero wins ' + potSize + '$';
@@ -501,9 +500,8 @@
     }
     // show end of hand text
     emptyTableForAnnouncementText();
-    villainActing.innerHTML = '';
     announcementText.innerHTML = announcement;
-    return announcementText.style.visibility = "visible";
+    return hero_current_bet.style.visibility = "hidden";
   };
 
   
@@ -689,11 +687,13 @@
   
   // RENDERING #
 
+  // bruker denne kun på river. Gjør det manuelt på earlier streets.
   emptyTableForAnnouncementText = function() {
     hero_current_action.style.visibility = "hidden";
-    hero_current_bet.visibility = "hidden";
-    //villain_current_bet.innerHTML = 'dummy bet to keep div size'
-    //villain_current_bet.style.visibility = 'hidden'
+    villainActing.style.visibility = "hidden";
+    villain_current_bet.style.visibility = 'hidden';
+    hero_dealer.style.visibility = "hidden";
+    villain_dealer.style.visibility = "hidden";
     return announcementText.style.visibility = "visible";
   };
 
@@ -865,7 +865,7 @@
     announcementText.innerHTML = 'Hero wins: ' + potSize + '$';
     return setTimeout((function() {
       return startHand();
-    }), 200);
+    }), 1000);
   };
 
   //###############
@@ -911,7 +911,7 @@
               hideHeroActionBar = true;
               setTimeout((function() {
                 return dealNextStreet(currentStreet);
-              }), 200);
+              }), 1000);
             }
             villainActing.innerHTML = 'Villain calls  ';
           // raise
@@ -928,7 +928,7 @@
             hideHeroActionBar = true;
             setTimeout((function() {
               return dealNextStreet(currentStreet);
-            }), 200);
+            }), 1000);
             if (rand < 50) {
               villain.calls(hero.getCurrentBet() - villain.getCurrentBet());
               villainActing.innerHTML = 'Villain Calls ';
@@ -936,7 +936,7 @@
               hideHeroActionBar = true;
               setTimeout((function() {
                 return dealNextStreet(currentStreet);
-              }), 200);
+              }), 1000);
             } else if (rand > 50) {
               betAmount = hero.getCurrentBet() + 98;
               villainCreateAndMakeBet(betAmount);
@@ -959,7 +959,7 @@
               hideHeroActionBar = true;
               setTimeout((function() {
                 return dealNextStreet(currentStreet);
-              }), 200);
+              }), 1000);
             
             // raise
             } else if (rand > 66) {
@@ -982,7 +982,7 @@
               hideHeroActionBar = true;
               setTimeout((function() {
                 return dealNextStreet(currentStreet);
-              }), 200);
+              }), 1000);
             }
           // villain bet small
           } else if (rand > 33 && rand < 66) {
@@ -1009,7 +1009,7 @@
             hideHeroActionBar = true;
             setTimeout((function() {
               return dealNextStreet(currentStreet);
-            }), 200);
+            }), 1000);
           } else {
             
             // RAISE
@@ -1032,7 +1032,7 @@
               hideHeroActionBar = true;
               setTimeout((function() {
                 return dealNextStreet(currentStreet);
-              }), 200);
+              }), 1000);
             }
           } else if (rand > 33 && rand < 66) {
             betAmount = hero.getCurrentBet();
@@ -1055,7 +1055,7 @@
           hideHeroActionBar = true;
           setTimeout((function() {
             return dealNextStreet(currentStreet);
-          }), 200);
+          }), 1000);
         }
       
       // RIVER #####################
@@ -1068,7 +1068,7 @@
             villainActing.innerHTML = 'Villain checks';
             setTimeout((function() {
               return dealNextStreet(currentStreet);
-            }), 200);
+            }), 1000);
             // check OOP
             if (heroIsDealer) {
               // check to hero
@@ -1098,7 +1098,7 @@
             villainActing.innerHTML = 'Villain calls';
             setTimeout((function() {
               return dealNextStreet(currentStreet);
-            }), 200);
+            }), 1000);
           } else {
             betAmount = hero.getCurrentBet();
             betAmount += 200;
@@ -1115,7 +1115,7 @@
       } else {
         return button_bar.style.visibility = 'visible';
       }
-    }), 200);
+    }), 1000);
   };
 
   
@@ -1138,7 +1138,7 @@
     announcementText.style.visibility = "visible";
     return setTimeout((function() {
       return startHand();
-    }), 200);
+    }), 1000);
   };
 
   
@@ -1180,7 +1180,7 @@
         hero_current_action.innerHTML = '';
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 200);
+        }), 1000);
       }
     // check/call OOP preflop 
     } else if (currentStreet === 1 && !heroIsDealer) {
@@ -1190,13 +1190,13 @@
         hero_current_action.innerHTML = '';
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 200);
+        }), 1000);
       // checks BB
       } else if (facingBet <= 2) {
         renderHeroCheckText();
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 200);
+        }), 1000);
       }
     } else {
       
@@ -1209,7 +1209,7 @@
         }
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 200);
+        }), 1000);
       // check/call OOP 
 
       // check to villain
@@ -1223,7 +1223,7 @@
         hero_current_action.innerHTML = '';
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 200);
+        }), 1000);
       }
     }
     button_bar.style.visibility = 'hidden';
@@ -1306,46 +1306,59 @@
   villain = new Player(defaultStackSize, 0);
 
   startHand = function() {
+    // new reset stuff
+    hero_current_action.innerHTML = '';
+    hero_current_action.style.visibility = 'visible';
+    hero_current_bet.style.visibility = 'visible';
+    villain_current_bet.style.visibility = 'visible';
+    announcementText.innerHTML = '';
+    announcementText.style.visibility = "hidden";
+    // reset stuff
+    new_hand_btn.style.display = 'none';
+    board = [];
+    renderEmptyHeroCards();
+    renderEmptyVillainCards();
+    renderResetFlop();
+    announcementText.innerHTML = '';
+    villainActing.innerHTML = '';
+    hero_current_action.innerHTML = '';
+    hero_current_bet.innerHTML = '';
+    villain_current_bet.innerHTML = '';
+    potDOM.innerHTML = '';
+    currentStreet = 0;
+    
+    // firt animation
     return setTimeout((function() {
-      // new reset stuff
-      hero_current_action.innerHTML = 'Fold';
-      hero_current_action.style.visibility = 'visible';
-      hero_current_bet.style.visibility = 'visible';
-      villain_current_bet.style.visibility = 'visible';
-      announcementText.innerHTML = '';
-      announcementText.style.visibility = "hidden";
-      // reset stuff
-      new_hand_btn.style.display = 'none';
-      board = [];
-      renderResetFlop();
-      announcementText.innerHTML = '';
-      villainActing.innerHTML = '';
-      hero_current_action.innerHTML = '';
-      //renderButtons(0)
-      currentStreet = 0;
       dealCards();
-      potSize = 3;
-      potDOM.innerHTML = 'Pot: $' + potSize;
-      // HERO IS DEALER
-      if (heroIsDealer === true) {
-        renderDealerBtn('hero');
-        button_bar.style.visibility = 'visible';
-        hero.paySmallBlind();
-        villain.payBigBlind();
-        renderBets();
-        renderButtons(villain.getCurrentBet() - hero.getCurrentBet());
-        return renderStacks();
-      } else {
-        // VILLAIN IS DEALER
-        renderDealerBtn(villain);
-        button_bar.style.visibility = 'hidden';
-        hero.payBigBlind();
-        villain.paySmallBlind();
-        renderBets();
-        return villainAct();
-      }
+      // second animation
+      return setTimeout((function() {
+        potSize = 3;
+        potDOM.innerHTML = 'Pot: $' + potSize;
+        // Pay blinds
+        if (heroIsDealer === true) {
+          renderDealerBtn('hero');
+          hero.paySmallBlind();
+          villain.payBigBlind();
+          renderBets();
+          setTimeout((function() {
+            renderButtons(villain.getCurrentBet() - hero.getCurrentBet());
+            return button_bar.style.visibility = 'visible';
+          }), 500);
+          return renderStacks();
+        } else {
+          // Pay blinds
+          renderDealerBtn(villain);
+          button_bar.style.visibility = 'hidden';
+          hero.payBigBlind();
+          villain.paySmallBlind();
+          renderBets();
+          return villainAct();
+        }
+      }), 500);
     }), 500);
   };
+
+  new_hand_btn.addEventListener('click', startHand);
 
   startHand();
 
