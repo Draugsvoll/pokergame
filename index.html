@@ -13,22 +13,27 @@
         <!-- VILLAIN -->
         <div class="opponent">
             <div><img src="" alt=""></div>
-            <div>Villain</div>
             <div class="villain-stack"></div>
-            <img id="villain-image" src='assets/villain.png'  alt="" >
+            <div class="villain-image-container">
+                <img id="villain-image" src='assets/villain.png'  alt="" >
+            </div>
             <div class="card-container">
                 <img id="villain-card1" src='assets/empty.png' alt="" >
                 <img id="villain-card2" src='assets/empty.png'  alt="" >
+                <div class="villain-strength"></div>
             </div>
-            <div class="villain-strength"></div>
             <div class="villain-acting"></div>
         </div>
     
         <!-- TABLE -->
         <div class="table">
-            <div ><img class="villain-dealer" src="" alt=""></div>
-            <div class="villain-current-bet"></div>
-            <div class="table-text"></div>
+            <!-- Villain info on table -->
+            <div class="villain-table-graphics">
+                <div><img class="villain-dealer" src='assets/button.png' alt=""></div>
+                <div class="villain-current-bet"></div>
+                <div class="table-text"></div>
+            </div>
+            <!-- Table graphics -->
             <div class="pot"></div>
             <div class="board-container">
                 <img id="board-card1" src='' alt="">
@@ -37,11 +42,12 @@
                 <img id="board-card4" src="" alt="">
                 <img id="board-card5" src='' alt="">
             </div>
-            <!-- HERO GRAPHIC ON TABLE -->
+            <!-- Hero info on TABLE -->
+            <button class="new-hand-btn">New Hand</button>
             <div class="hero-table-graph">
                 <div class="hero-current-bet"></div>
                 <div class="hero-current-action"></div>
-                <div ><img class="hero-dealer" src="" alt=""></div>
+                <div ><img class="hero-dealer" src='assets/button.png' alt=""></div>
             </div>
         </div>
     
@@ -54,7 +60,6 @@
                     <img id="hero-card2" src='assets/empty.png' alt="">
                 </div>
                 <img id="hero-image" src='assets/hero.png'  alt="" >
-                <div class="name">Hero</div>
                 <div class="hero-stack"></div>
             </div>
         </div>
@@ -64,11 +69,12 @@
             <div><button class="fold"></button></div>
             <div><button class="check-call"></button></div>
             <div><button class="bet-raise"></button></div>
+            <div><input type="number" name="betslider" min="2" max="2000" value="100"></div>
         </div>
     </div>
 
 
     <!-- <script src="bundled.js"></script> -->
-    <script src="app.js" type="module"></script>
+    <script src="app.js" ></script>
 </body>
 </html>
