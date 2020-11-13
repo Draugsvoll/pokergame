@@ -314,7 +314,7 @@ input {
         overflow-x: hidden;
     }
     .hero-container{
-        margin-top: -64px;
+        margin-top: -74px;
     }
     .hero-dealer {
         width: 20px;
@@ -351,7 +351,7 @@ input {
         margin-top: 0px;
     }
     .hero-container{
-        margin-top: -74px;
+        margin-top: -84px;
     }
     #board-card1, #board-card2, #board-card3, #board-card4, #board-card5 {
         height:90px;
