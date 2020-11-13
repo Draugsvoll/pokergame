@@ -13,5 +13,6 @@ currentStreet incremented inside dealCards() functions
 
 
 # TODO
-card rank translate to string
-
+responsive height
+re-arrange hand strength text & stacks
+more delay after villain acts

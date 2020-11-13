@@ -869,8 +869,7 @@ villainAct =  ->
     hero_image.classList.remove("glowing")
 
     isVillainDealer = !heroIsDealer
-    #rand = Math.random() * 100 + 20
-    rand = 50
+    rand = Math.random() * 100 + 20
     villainActTime = 2500
     setTimeout (->
         #
@@ -1093,8 +1092,9 @@ villainAct =  ->
         else
             setTimeout ( -> 
                 button_bar.style.visibility = 'visible'
-            ), 400
-    ), 2500
+            ), 900
+
+    ), 2500 #total act time
 
 #
 # HERO BUTTONS (ACTION LOGIC) #

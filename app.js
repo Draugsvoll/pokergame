@@ -1028,8 +1028,7 @@
     villain_image.className = " glowing";
     hero_image.classList.remove("glowing");
     isVillainDealer = !heroIsDealer;
-    //rand = Math.random() * 100 + 20
-    rand = 90;
+    rand = Math.random() * 100 + 20;
     villainActTime = 2500;
     return setTimeout((function() {
       var betAmount, facingBet;
@@ -1273,9 +1272,9 @@
       } else {
         return setTimeout((function() {
           return button_bar.style.visibility = 'visible';
-        }), 400);
+        }), 900);
       }
-    }), 2500);
+    }), 2500); //total act time
   };
 
   

@@ -303,13 +303,23 @@ input {
         margin-top: -265px;
     }
     button {
-        width:90px;
+        width:105px;
         height: 40px;
         margin-right: 5px;
         font-size: 14px;
     }
     body {
         overflow-x: hidden;
+    }
+    .hero-container{
+        margin-top: -64px;
+    }
+    .hero-dealer {
+        width: 20px;
+        height: 20px;
+    }
+    .pot {
+        margin-top: -5px;
     }
   }
   
@@ -320,17 +330,27 @@ input {
        width:360px;
        height: 330px;
     }
+    .pot {
+        margin-top: -5px;
+    }
+    .hero-dealer {
+        width:20px;
+        height:20px;
+    }
     body {
         overflow-x: hidden;
     }
     #villain-image {
         margin-top: 0px;
     }
+    .hero-container{
+        margin-top: -74px;
+    }
     #board-card1, #board-card2, #board-card3, #board-card4, #board-card5 {
         height:90px;
     }
     #villain-card1, #villain-card2, #hero-card1, #hero-card2  {
-        width: 50px;
+        width: 47px;
     }
     
     .hero-current-bet{
@@ -341,10 +361,11 @@ input {
         margin-bottom: 3px;
     }
     .new-hand-btn{
-        margin-top: -265px;
+        margin-top: -185px;
+        width: 95px;
     }
     button {
-        width:90px;
+        width:100px;
         height: 40px;
         margin-right: 5px;
         font-size: 14px;
