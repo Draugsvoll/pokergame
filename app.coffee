@@ -870,7 +870,7 @@ villainAct =  ->
 
     isVillainDealer = !heroIsDealer
     #rand = Math.random() * 100 + 20
-    rand = 90
+    rand = 50
     villainActTime = 2500
     setTimeout (->
         #
