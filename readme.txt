@@ -13,6 +13,5 @@ currentStreet incremented inside dealCards() functions
 
 
 # TODO
-logic for kicker/high cards
 card rank translate to string
 

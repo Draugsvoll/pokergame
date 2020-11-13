@@ -7,7 +7,7 @@
   // DOM HOOKS #
 
   // buttons
-  var Player, actingTime, announcementText, betRaise, bet_raise_btn, board, boardCard1, boardCard2, boardCard3, boardCard4, boardCard5, button_bar, checkCall, check_call_btn, clearBets, currentStreet, dealCards, dealFlop, dealNextStreet, dealRiver, dealTurn, deck, defaultStackSize, emptyTableForAnnouncementText, endHand, fold_btn, getHandStrength, getKicker, getNewDeck, hand1, handRank, hasFlush, hasPairsOrTripsOrQuads, hasStraight, hero, heroCard1DOM, heroCard2DOM, heroCards, heroFold, heroIsDealer, heroStack, heroStrength, hero_current_action, hero_current_bet, hero_dealer, hero_image, new_hand_btn, potDOM, potSize, renderBets, renderButtons, renderDealerBtn, renderEmptyHeroCards, renderEmptyTableGraphics, renderEmptyVillainCards, renderHandSrengths, renderHeroBetText, renderHeroCallText, renderHeroCheckText, renderPlayerCards, renderPot, renderResetFlop, renderStacks, renderVillainBetText, renderVillainCallText, renderVillainCheckText, renderVillainFoldText, startHand, villain, villainAct, villainActing, villainCard1DOM, villainCard2DOM, villainCards, villainCreateAndMakeBet, villainFold, villainStack, villainStrength, villain_current_bet, villain_dealer, villain_image;
+  var Player, actingTime, announcementText, betRaise, bet_raise_btn, board, boardCard1, boardCard2, boardCard3, boardCard4, boardCard5, button_bar, checkCall, check_call_btn, clearBets, currentStreet, dealCards, dealFlop, dealNextStreet, dealRiver, dealTurn, deck, defaultStackSize, emptyTableForAnnouncementText, endHand, fold_btn, getHandStrength, getKicker, getNewDeck, handRank, hasFlush, hasPairsOrTripsOrQuads, hasStraight, hero, heroCard1DOM, heroCard2DOM, heroCards, heroFold, heroIsDealer, heroStack, heroStrength, hero_current_action, hero_current_bet, hero_dealer, hero_image, new_hand_btn, potDOM, potSize, renderBets, renderButtons, renderDealerBtn, renderEmptyHeroCards, renderEmptyTableGraphics, renderEmptyVillainCards, renderHandSrengths, renderHeroBetText, renderHeroCallText, renderHeroCheckText, renderPlayerCards, renderPot, renderResetFlop, renderStacks, renderVillainBetText, renderVillainCallText, renderVillainCheckText, renderVillainFoldText, startHand, villain, villainAct, villainActing, villainCard1DOM, villainCard2DOM, villainCards, villainCreateAndMakeBet, villainFold, villainStack, villainStrength, villain_current_bet, villain_dealer, villain_image;
 
   button_bar = document.querySelector('.button-bar');
 
@@ -501,7 +501,7 @@
   // GET HAND-STRENGTH INFORMATION
 
   getHandStrength = function(playerCards, board) {
-    var card, hand, handStrengths, index, k, l, len, len1, len2, m, rank, strength, strongestHand;
+    var card, hand, handStrengths, index, k, l, len, len1, len2, m, rank, strength, string, string1, string2, string3, string4, string5, strongestHand;
     handStrengths = [''];
     strongestHand = [''];
     rank = 0;
@@ -570,7 +570,13 @@
         }
       }
     }
-    return strongestHand[0];
+    string = strongestHand[0];
+    string1 = string.replace("10", "Ten");
+    string2 = string1.replace("11", "Jack");
+    string3 = string2.replace("12", "Queen");
+    string4 = string3.replace("13", "King");
+    string5 = string4.replace("14", "Ace");
+    return string5;
   };
 
   // determine winning hand at end (rank by integers)
@@ -694,12 +700,31 @@
   };
 
   hasPairsOrTripsOrQuads = function(hand) {
-    var card, highCard, i, index, k, kicker, l, len, len1, outcome, pair, pair1, pair2, pairs, quads, rank, ranks, trips, value;
+    var card, cardRankToName, highCard, i, index, k, kicker, l, len, len1, outcome, pair, pair1, pair2, pairs, quads, rank, ranks, trips, value;
     // these arrays keeps track of hand strengths registered
     quads = [];
     trips = [];
     pairs = [];
     ranks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    cardRankToName = function(cardRank) {
+      if (rank === 10) {
+        return 'Ten';
+      }
+      if (rank === 11) {
+        return 'Jack';
+      }
+      if (rank === 12) {
+        return 'Queen';
+      }
+      if (rank === 13) {
+        return 'King';
+      }
+      if (rank === 14) {
+        return 'Ace';
+      } else {
+        return cardRank;
+      }
+    };
 // check every card in hand
     for (k = 0, len = hand.length; k < len; k++) {
       card = hand[k];
@@ -725,7 +750,7 @@
       i = ranks.length;
       while (i >= 0) {
         if (ranks[i] > 0) {
-          highCard = (i + 2).toString();
+          highCard = i + 2;
           return 'High card ' + highCard;
         } else {
 
@@ -842,11 +867,11 @@
   };
 
   renderVillainCallText = function() {
-    return villainActing.innerHTML = 'Call ' + villain.getCurrentBet();
+    return villainActing.innerHTML = 'Call ';
   };
 
   renderVillainBetText = function() {
-    return villainActing.innerHTML = 'Bet ' + villain.getCurrentBet();
+    return villainActing.innerHTML = 'Bet ';
   };
 
   renderHeroCheckText = function() {
@@ -901,7 +926,7 @@
       // facing bet
       fold_btn.innerHTML = 'Fold';
       check_call_btn.innerHTML = 'Call $' + (facingBet - hero.getCurrentBet());
-      return bet_raise_btn.innerHTML = 'Raise $' + (facingBet + 100);
+      return bet_raise_btn.innerHTML = 'Raise $' + (facingBet * 2);
     }
   };
 
@@ -944,7 +969,7 @@
     return setTimeout((function() {
       heroCard1DOM.src = `assets/${heroCards[0].value}.png`;
       return heroCard2DOM.src = `assets/${heroCards[1].value}.png`;
-    }), 175);
+    }), 250);
   };
 
   renderHandSrengths = function() {
@@ -956,11 +981,11 @@
   // VILLAIN LOGIC (ACTIONS) #
 
   villainCreateAndMakeBet = function(betAmount) {
-    villainActing.innerHTML = 'Villain bets ';
+    villainActing.innerHTML = 'Bet ';
     hero_current_action.innerHTML = '';
     villain.bets(betAmount);
-    renderButtons(betAmount);
-    return renderBets();
+    renderBets();
+    return renderButtons(betAmount);
   };
 
   villainFold = function() {
@@ -979,8 +1004,8 @@
       announcementText.innerHTML = 'Hero wins: ' + potSize + '$';
       return setTimeout((function() {
         return startHand();
-      }), 200);
-    }), 200);
+      }), 1500);
+    }), 1500);
   };
 
   
@@ -990,19 +1015,22 @@
 
   //###############
   villainAct = function() {
-    var hideHeroActionBar, isVillainDealer, rand;
+    var hideHeroActionBar, isVillainDealer, rand, villainActTime;
     // render graphics
     renderStacks();
     button_bar.style.visibility = 'hidden';
     villainActing.style.visibility = "visible";
-    villainActing.innerHTML = 'Acting..';
+    setTimeout((function() {
+      return villainActing.innerHTML = 'Acting..';
+    }), 350);
     hideHeroActionBar = false;
     // glowing effect
     villain_image.className = " glowing";
     hero_image.classList.remove("glowing");
     isVillainDealer = !heroIsDealer;
     //rand = Math.random() * 100 + 20
-    rand = 80;
+    rand = 50;
+    villainActTime = 2500;
     return setTimeout((function() {
       var betAmount, facingBet;
       
@@ -1031,7 +1059,7 @@
               hideHeroActionBar = true;
               setTimeout((function() {
                 return dealNextStreet(currentStreet);
-              }), 200);
+              }), 1200);
             }
             renderVillainCallText();
           // raise
@@ -1049,7 +1077,7 @@
               hideHeroActionBar = true;
               setTimeout((function() {
                 return dealNextStreet(currentStreet);
-              }), 200);
+              }), villainActTime);
             } else if (rand > 50) {
               betAmount = hero.getCurrentBet() + 98;
               villainCreateAndMakeBet(betAmount);
@@ -1071,7 +1099,7 @@
               hideHeroActionBar = true;
               setTimeout((function() {
                 return dealNextStreet(currentStreet);
-              }), 200);
+              }), 1200);
             
             // raise
             } else if (rand > 66) {
@@ -1094,7 +1122,7 @@
               hideHeroActionBar = true;
               setTimeout((function() {
                 return dealNextStreet(currentStreet);
-              }), 200);
+              }), villainActTime);
             }
           // villain bet small
           } else if (rand > 33 && rand < 66) {
@@ -1123,12 +1151,11 @@
             hideHeroActionBar = true;
             setTimeout((function() {
               return dealNextStreet(currentStreet);
-            }), 200);
+            }), villainActTime);
           } else {
             
             // RAISE
-            betAmount = hero.getCurrentBet();
-            betAmount += 100;
+            betAmount = hero.getCurrentBet() * 2;
             villainCreateAndMakeBet(betAmount);
             renderButtons(betAmount);
           }
@@ -1146,19 +1173,17 @@
               hideHeroActionBar = true;
               setTimeout((function() {
                 return dealNextStreet(currentStreet);
-              }), 200);
+              }), 1200);
             }
-          
           // call
           } else if (rand < 66) {
             betAmount = hero.getCurrentBet();
             betAmount += 100;
             villainCreateAndMakeBet(betAmount);
             renderButtons(betAmount);
-          // raise
+          // bet
           } else if (rand > 66) {
-            betAmount = hero.getCurrentBet();
-            betAmount += 100;
+            betAmount = 100;
             villainCreateAndMakeBet(betAmount);
             renderButtons(betAmount);
           }
@@ -1177,11 +1202,10 @@
             hideHeroActionBar = true;
             setTimeout((function() {
               return dealNextStreet(currentStreet);
-            }), 200);
+            }), 1200);
           // raise
           } else if (rand > 66) {
-            betAmount = hero.getCurrentBet();
-            betAmount += 100;
+            betAmount = hero.getCurrentBet() * 2;
             villainCreateAndMakeBet(betAmount);
             renderButtons(betAmount);
           }
@@ -1198,7 +1222,7 @@
               hideHeroActionBar = true;
               setTimeout((function() {
                 return dealNextStreet(currentStreet);
-              }), 200);
+              }), villainActTime);
             // check to hero if OOP
             } else if (heroIsDealer) {
               renderVillainCheckText();
@@ -1231,7 +1255,7 @@
             // call as dealer -> next street
             setTimeout((function() {
               return dealNextStreet(currentStreet);
-            }), 200);
+            }), villainActTime);
           // raise
           } else if (rand > 66) {
             betAmount = hero.getCurrentBet() * 2;
@@ -1247,9 +1271,11 @@
       if (hideHeroActionBar) {
         return button_bar.style.visibility = 'hidden';
       } else {
-        return button_bar.style.visibility = 'visible';
+        return setTimeout((function() {
+          return button_bar.style.visibility = 'visible';
+        }), 400);
       }
-    }), 200);
+    }), 2500);
   };
 
   
@@ -1272,7 +1298,7 @@
     announcementText.style.visibility = "visible";
     return setTimeout((function() {
       return startHand();
-    }), 200);
+    }), 1500);
   };
 
   
@@ -1313,7 +1339,7 @@
         hero.calls(facingBet);
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 1000);
+        }), 800);
       }
     // check/call OOP preflop 
     } else if (currentStreet === 1 && !heroIsDealer) {
@@ -1323,13 +1349,13 @@
         hero_current_action.innerHTML = '';
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 1000);
+        }), 800);
       // checking BB
       } else if (facingBet <= 2) {
         //renderHeroCheckText()
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 1000);
+        }), 800);
       }
     } else {
       
@@ -1341,13 +1367,13 @@
         if (facingBet === 0) {
           setTimeout((function() {
             return dealNextStreet(currentStreet);
-          }), 1000);
+          }), 2000);
         // facing bet
         } else if (facingBet > 0) {
           hero.calls(facingBet);
           setTimeout((function() {
             return dealNextStreet(currentStreet);
-          }), 1000);
+          }), 2000);
         }
       // check to villain
       } else if (facingBet === 0) {
@@ -1359,7 +1385,7 @@
         hero_current_action.innerHTML = '';
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 200);
+        }), 2000);
       }
     }
     button_bar.style.visibility = 'hidden';
@@ -1443,6 +1469,7 @@
 
   startHand = function() {
     // reset stuff for new hand
+    new_hand_btn.innerHTML = "Next Hand";
     announcementText.innerHTML = '';
     villainActing.innerHTML = '';
     hero_current_action.innerHTML = '';
@@ -1459,7 +1486,8 @@
     villain_current_bet.style.visibility = 'visible';
     announcementText.style.visibility = "hidden";
     new_hand_btn.style.display = 'none';
-    button_bar.style.display = "";
+    button_bar.style.display = "block";
+    button_bar.style.display = "flex";
     board = [];
     renderEmptyHeroCards();
     renderEmptyVillainCards();
@@ -1468,51 +1496,50 @@
     
     // deal cards
     return setTimeout((function() {
-      dealCards();
+      potSize = 3;
+      potDOM.innerHTML = 'Pot: $' + potSize;
+      // Pay blinds
+      if (heroIsDealer) {
+        renderDealerBtn('hero');
+        hero.paySmallBlind();
+        villain.payBigBlind();
+        renderBets();
+        setTimeout((function() {
+          renderButtons(villain.getCurrentBet() - hero.getCurrentBet());
+          return button_bar.style.visibility = 'visible';
+        }), 2000);
+        renderStacks();
+      } else if (!heroIsDealer) {
+        renderDealerBtn('villain');
+        button_bar.style.visibility = 'hidden';
+        hero.payBigBlind();
+        villain.paySmallBlind();
+        renderBets();
+        setTimeout((function() {
+          return villainAct();
+        }), 2000);
+      }
       // pay blinds
       return setTimeout((function() {
-        potSize = 3;
-        potDOM.innerHTML = 'Pot: $' + potSize;
-        // Pay blinds
-        if (heroIsDealer === true) {
-          renderDealerBtn('hero');
-          hero.paySmallBlind();
-          villain.payBigBlind();
-          renderBets();
-          setTimeout((function() {
-            renderButtons(villain.getCurrentBet() - hero.getCurrentBet());
-            return button_bar.style.visibility = 'visible';
-          }), 800);
-          return renderStacks();
-        } else if (!heroIsDealer) {
-          renderDealerBtn('villain');
-          button_bar.style.visibility = 'hidden';
-          hero.payBigBlind();
-          villain.paySmallBlind();
-          renderBets();
-          return setTimeout((function() {
-            return villainAct();
-          }), 800);
-        }
-      }), 800);
-    }), 800);
+        return dealCards();
+      }), 1000);
+    }), 1000);
   };
 
   new_hand_btn.addEventListener('click', startHand);
 
   //startHand()
-  heroCards = [deck[0], deck[1]];
 
-  board = [deck[2], deck[3], deck[6], deck[19], deck[32]];
+  // heroCards = [ deck[0], deck[1] ]
+// board = [ deck[2], deck[3], deck[6], deck[19], deck[32] ]
 
-  hand1 = [deck[2], deck[3], deck[18], deck[45], deck[30], deck[0], deck[1]];
+  // hand1 = [ deck[2], deck[3], deck[18], deck[45], deck[30], deck[0], deck[1] ]
 
-  heroStrength = getHandStrength(heroCards, board);
+  // heroStrength = getHandStrength(heroCards, board)
 
-  console.log(heroCards);
+  // console.log heroCards
+// console.log board
 
-  console.log(board);
-
-  console.log('heros hand strength: ' + heroStrength);
+  // console.log 'heros hand strength: ' + heroStrength
 
 }).call(this);
