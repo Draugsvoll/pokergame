@@ -55,7 +55,6 @@ body {
     margin-right: 30%;
 }
 
-
 .villain-table-graphics {
     height:107px;
 }
@@ -91,15 +90,12 @@ body {
     text-align: start;
 }
 
-
-
-
-
 .table-text {
-    font-size: 30px;
+    font-size: 35px;
     visibility: hidden;
     /* background: rgba(2, 23, 2, 0.6); */
     margin: 0 auto 30px auto;
+    margin-top: -30px;
     text-shadow: 0 0 2px #0d6fd1, 0 0 4px #e93547;
 }
 
@@ -175,17 +171,19 @@ img {
 .hero-strength {
     height: 24px;
     font-size: 15px;
+    margin: auto 10px;
 }
 
 .villain-strength {
     font-size: 15px;
-    margin:auto;
+    margin:auto 10px;
+    margin-top:-27px;
 }  
 
 .hero-stack, .villain-stack {
     height: 24px;
     font-size:23px;
-    margin-bottom: 0;
+    margin: 10px
 }
 
 .card-container-hero {
@@ -275,6 +273,10 @@ input {
 
 
 @media only screen and (max-width: 600px) {
+    .table-text {
+        font-size: 26px;
+        margin-top: -30px;
+    }
     .table {
        width: 425px;
        height: 335px;
@@ -300,7 +302,7 @@ input {
         width: 55px;
     }
     .new-hand-btn{
-        margin-top: -265px;
+        margin-top: -205px;
     }
     button {
         width:105px;
@@ -319,7 +321,7 @@ input {
         height: 20px;
     }
     .pot {
-        margin-top: -5px;
+        margin-top: -9px;
     }
   }
   
@@ -330,8 +332,13 @@ input {
        width:360px;
        height: 330px;
     }
+    .table-text {
+        margin-top: -44px;
+        font-size: 26px;
+    }
+    
     .pot {
-        margin-top: -5px;
+        margin-top: -27px;
     }
     .hero-dealer {
         width:20px;
@@ -361,7 +368,7 @@ input {
         margin-bottom: 3px;
     }
     .new-hand-btn{
-        margin-top: -185px;
+        margin-top: -213px;
         width: 95px;
     }
     button {
@@ -370,4 +377,12 @@ input {
         margin-right: 5px;
         font-size: 14px;
     }
+    .hero-strength {
+        height: 20px;
+        font-size: 13px;
+    }
+    .villain-strength {
+        font-size: 13px;
+        margin:auto;
+    }  
   }

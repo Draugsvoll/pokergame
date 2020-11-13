@@ -91,6 +91,8 @@
 
   villainStrength.style.visibility = "hidden";
 
+  villainStrength.style.display = "none";
+
   villain_dealer.style.visibility = "hidden";
 
   villain_dealer.style.visibility = "hidden";
@@ -465,6 +467,7 @@
     villainCard2DOM.src = `assets/${villainCards[1].value}.png`;
     villainStrength.style.display = "";
     villainStrength.style.visibility = "visible";
+    villainStrength.style.display = "";
     // get players hand strength
     villainHand = getHandStrength(villainCards, board);
     villainHand = getHandStrength(villainCards, board);
@@ -1028,7 +1031,7 @@
     villain_image.className = " glowing";
     hero_image.classList.remove("glowing");
     isVillainDealer = !heroIsDealer;
-    rand = Math.random() * 100 + 20;
+    rand = Math.random() * 100 + 13;
     villainActTime = 2500;
     return setTimeout((function() {
       var betAmount, facingBet;
@@ -1480,6 +1483,7 @@
     heroStrength.innerHTML = '';
     villainStrength.innerHTML = '';
     villainStrength.style.visibility = 'hidden';
+    villainStrength.style.display = 'none';
     hero_current_action.style.visibility = 'visible';
     hero_current_bet.style.visibility = 'visible';
     villain_current_bet.style.visibility = 'visible';
