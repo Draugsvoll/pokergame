@@ -1029,7 +1029,7 @@
     hero_image.classList.remove("glowing");
     isVillainDealer = !heroIsDealer;
     //rand = Math.random() * 100 + 20
-    rand = 50;
+    rand = 90;
     villainActTime = 2500;
     return setTimeout((function() {
       var betAmount, facingBet;
