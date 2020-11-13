@@ -190,13 +190,10 @@ img {
 }
 
 .card-container-hero {
-    /* height: 107px; */
     height:55px;
-    z-index: 10;
 }
 
 .card-container-villain {
-    /* height: 107px; */
     height: 60px;
 }
 
@@ -227,7 +224,6 @@ img {
 
 #board-card1, #board-card2, #board-card3, #board-card4, #board-card5 {
     height:110px;
-    z-index: 999;
 }
 
 .board-container {
@@ -238,7 +234,6 @@ img {
     margin-top: 5px;
     border-radius: 100%;
     border: 2px solid rgba(0,0,0,0);
-    z-index: 1000;
 }
 
 .villain-image-container {
@@ -281,11 +276,48 @@ input {
 
 
 @media only screen and (max-width: 600px) {
-    body {
-      background-color: lightblue;
-    }
     .table {
        width:425px;
-       height: 355px;
+       height: 345px;
+    }
+    .hero-current-bet{
+        margin-top:0px;    
+    }
+    .button-bar {
+        margin-top: 0px;
+        margin-bottom: 3px;
+    }
+  }
+  
+@media only screen and (max-width: 430px) {
+    .table {
+       width:375px;
+       height: 335px;
+    }
+    #board-card1, #board-card2, #board-card3, #board-card4, #board-card5 {
+        height:90px;
+    }
+    #villain-card1, #villain-card2, #hero-card1, #hero-card2  {
+        width: 50px;
+    }
+    button {
+        width:90px;
+        height: 40px;
+        /* background: rgba(212, 5, 5, 1); */
+        border-radius: 8px;
+        margin-right: 5px;
+        border: 1.5px solid rgb(5, 2, 16, 0.7);
+        outline: none;
+        font-size: 14px;
+        cursor: pointer;
+        background: rgb(187,19,19);
+        background: linear-gradient(90deg, rgba(187,19,19,1) 18%, rgba(194,28,28,1) 77%);
+    }
+    .hero-current-bet{
+        margin-top:0px;    
+    }
+    .button-bar {
+        margin-top: 0px;
+        margin-bottom: 3px;
     }
   }
