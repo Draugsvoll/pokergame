@@ -7,7 +7,7 @@
   // DOM HOOKS #
 
   // buttons
-  var Player, actingTime, announcementText, betRaise, bet_raise_btn, board, boardCard1, boardCard2, boardCard3, boardCard4, boardCard5, button_bar, checkCall, check_call_btn, clearBets, currentStreet, dealCards, dealFlop, dealNextStreet, dealRiver, dealTurn, deck, defaultStackSize, emptyTableForAnnouncementText, endHand, fold_btn, getHandStrength, getNewDeck, handRank, hasFlush, hasPairsOrTripsOrQuads, hasStraight, hero, heroCard1DOM, heroCard2DOM, heroCards, heroFold, heroIsDealer, heroStack, heroStrength, hero_current_action, hero_current_bet, hero_dealer, hero_image, new_hand_btn, potDOM, potSize, renderBets, renderButtons, renderDealerBtn, renderEmptyHeroCards, renderEmptyTableGraphics, renderEmptyVillainCards, renderHandSrengths, renderHeroBetText, renderHeroCallText, renderHeroCheckText, renderPlayerCards, renderPot, renderResetFlop, renderStacks, renderVillainBetText, renderVillainCallText, renderVillainCheckText, renderVillainFoldText, startHand, villain, villainAct, villainActing, villainCard1DOM, villainCard2DOM, villainCards, villainCreateAndMakeBet, villainFold, villainStack, villainStrength, villain_current_bet, villain_dealer, villain_image;
+  var Player, actingTime, announcementText, betRaise, bet_raise_btn, board, boardCard1, boardCard2, boardCard3, boardCard4, boardCard5, button_bar, checkCall, check_call_btn, clearBets, currentStreet, dealCards, dealFlop, dealNextStreet, dealRiver, dealTurn, deck, defaultStackSize, emptyTableForAnnouncementText, endHand, fold_btn, getHandStrength, getKicker, getNewDeck, hand1, handRank, hasFlush, hasPairsOrTripsOrQuads, hasStraight, hero, heroCard1DOM, heroCard2DOM, heroCards, heroFold, heroIsDealer, heroStack, heroStrength, hero_current_action, hero_current_bet, hero_dealer, hero_image, new_hand_btn, potDOM, potSize, renderBets, renderButtons, renderDealerBtn, renderEmptyHeroCards, renderEmptyTableGraphics, renderEmptyVillainCards, renderHandSrengths, renderHeroBetText, renderHeroCallText, renderHeroCheckText, renderPlayerCards, renderPot, renderResetFlop, renderStacks, renderVillainBetText, renderVillainCallText, renderVillainCheckText, renderVillainFoldText, startHand, villain, villainAct, villainActing, villainCard1DOM, villainCard2DOM, villainCards, villainCreateAndMakeBet, villainFold, villainStack, villainStrength, villain_current_bet, villain_dealer, villain_image;
 
   button_bar = document.querySelector('.button-bar');
 
@@ -367,7 +367,6 @@
     currentStreet++;
     hero.clearCurrentBet();
     villain.clearCurrentBet();
-    console.log('FROM DEALFLOP: ' + hero.getCurrentBet());
     // glowing effect
     if (heroIsDealer) {
       villain_image.className = " glowing";
@@ -377,10 +376,13 @@
       villain_image.classList.remove("glowing");
     }
     renderEmptyTableGraphics();
-    // Villain act first if OOP
+    // Villain act first OOP
     if (heroIsDealer) {
-      villainAct();
+      setTimeout((function() {
+        return villainAct();
+      }), 800);
     } else {
+      // hero act first
       button_bar.style.visibility = 'visible';
     }
     i = 3;
@@ -454,27 +456,6 @@
     return renderHandSrengths();
   };
 
-  // determine winning hand at end (rank by integers)
-  handRank = function(hand) {
-    if (hand.includes('Four')) {
-      return 9;
-    } else if (hand.includes('Full')) {
-      return 8;
-    } else if (hand.includes('Flush')) {
-      return 7;
-    } else if (hand.includes('Straight')) {
-      return 6;
-    } else if (hand.includes('Three')) {
-      return 5;
-    } else if (hand.includes('Two')) {
-      return 4;
-    } else if (hand.includes('Pair')) {
-      return 3;
-    } else {
-      return 2;
-    }
-  };
-
   endHand = function() {
     var amount, announcement, heroHand, heroHandStrength, villainHand, villainHandStrength, winner;
     // hide new hand btn
@@ -520,56 +501,140 @@
   // GET HAND-STRENGTH INFORMATION
 
   getHandStrength = function(playerCards, board) {
-    var card, hand, handStrength, index, j, k, l, len, len1, len2, strength;
-    handStrength = [''];
+    var card, hand, handStrengths, index, k, l, len, len1, len2, m, rank, strength, strongestHand;
+    handStrengths = [''];
+    strongestHand = [''];
+    rank = 0;
     // get the hand
     hand = [];
-    for (j = 0, len = playerCards.length; j < len; j++) {
-      card = playerCards[j];
+    for (k = 0, len = playerCards.length; k < len; k++) {
+      card = playerCards[k];
       hand.push(card);
     }
-    for (k = 0, len1 = board.length; k < len1; k++) {
-      card = board[k];
+    for (l = 0, len1 = board.length; l < len1; l++) {
+      card = board[l];
       hand.push(card);
     }
-    //check for hand strengths
-    handStrength.push(hasFlush(hand));
-    handStrength.push(hasPairsOrTripsOrQuads(hand));
-    handStrength.push(hasStraight(hand));
-// return hand (the strongest one)
-    for (index = l = 0, len2 = handStrength.length; l < len2; index = ++l) {
-      strength = handStrength[index];
-      if (handStrength[index].includes('Four')) {
-        return handStrength[index];
+    // check for all hand strengths
+    handStrengths.push(hasFlush(hand));
+    handStrengths.push(hasPairsOrTripsOrQuads(hand));
+    handStrengths.push(hasStraight(hand));
+// return the strongest one
+    for (index = m = 0, len2 = handStrengths.length; m < len2; index = ++m) {
+      strength = handStrengths[index];
+      if (handStrengths[index].includes('Four')) {
+        rank = 9;
+        strongestHand = [];
+        strongestHand.push(handStrengths[index]);
       } else if (strength.includes('house')) {
-        return handStrength[index];
+        if (rank < 8) {
+          rank = 8;
+          strongestHand = [];
+          strongestHand.push(handStrengths[index]);
+        }
       } else if (strength.includes('Flush')) {
-        return handStrength[index];
+        if (rank < 7) {
+          rank = 7;
+          strongestHand = [];
+          strongestHand.push(handStrengths[index]);
+        }
       } else if (strength.includes('Straight')) {
-        return handStrength[index];
+        if (rank < 6) {
+          rank = 6;
+          strongestHand = [];
+          strongestHand.push(handStrengths[index]);
+        }
       } else if (strength.includes('Three')) {
-        return handStrength[index];
+        if (rank < 5) {
+          rank = 5;
+          strongestHand = [];
+          strongestHand.push(handStrengths[index]);
+        }
       } else if (strength.includes('Two')) {
-        return handStrength[index];
+        if (rank < 4) {
+          rank = 4;
+          strongestHand = [];
+          strongestHand.push(handStrengths[index]);
+        }
       } else if (strength.includes('Pair')) {
-        return handStrength[index];
-      } else if (strength.includes('High')) {
-        return handStrength[index];
+        if (rank < 3) {
+          rank = 3;
+          strongestHand = [];
+          strongestHand.push(handStrengths[index]);
+        }
+      } else if (strength.includes('High card')) {
+        if (rank < 2) {
+          rank = 2;
+          strongestHand = [];
+          strongestHand.push(handStrengths[index]);
+        }
       }
+    }
+    return strongestHand[0];
+  };
+
+  // determine winning hand at end (rank by integers)
+  handRank = function(hand) {
+    if (hand.includes('Four')) {
+      return 9;
+    } else if (hand.includes('Full')) {
+      return 8;
+    } else if (hand.includes('Flush')) {
+      return 7;
+    } else if (hand.includes('Straight')) {
+      return 6;
+    } else if (hand.includes('Three')) {
+      return 5;
+    } else if (hand.includes('Two')) {
+      return 4;
+    } else if (hand.includes('Pair')) {
+      return 3;
+    } else if (hand.includes('High')) {
+      return 2;
+    }
+  };
+
+  // kicker for ranked type hands
+  getKicker = function(ranks) {
+    var j, kicker;
+    j = ranks.length;
+    while (j > 0) {
+      kicker = '';
+      if (ranks[j - 1] === 1) {
+        kicker = j + 1;
+        return kicker;
+        j = 0;
+      }
+      j--;
     }
   };
 
   hasFlush = function(hand) {
-    var card, index, j, len, suits;
+    var card, index, k, kicker, l, len, len1, len2, len3, len4, m, n, o, rank, ranks, suits;
     suits = {
       hearts: 0,
       spades: 0,
       clubs: 0,
       diamonds: 0
     };
+    ranks = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0 // used to track high cards
+    ];
 
     // push suits in hand to new array
-    for (index = j = 0, len = hand.length; j < len; index = ++j) {
+    for (index = k = 0, len = hand.length; k < len; index = ++k) {
       card = hand[index];
       if (card.value.includes('H')) {
         suits.hearts += 1;
@@ -583,33 +648,67 @@
     }
     // check for flush
     if (suits.hearts >= 5) {
-      return 'Flush in Hearts';
+      for (l = 0, len1 = hand.length; l < len1; l++) {
+        card = hand[l];
+        if (card.value.includes('H')) {
+          rank = card.rank;
+          // place the card rank in the array with same index. Card '4H' gets placed in the fourth element-> rank[3]
+          ranks[rank - 2] += 1;
+          kicker = getKicker(ranks);
+        }
+      }
+      return 'Flush in Hearts' + ', ' + kicker + ' high';
     } else if (suits.clubs >= 5) {
-      return 'Flush in clubs';
+      for (m = 0, len2 = hand.length; m < len2; m++) {
+        card = hand[m];
+        if (card.value.includes('C')) {
+          rank = card.rank;
+          ranks[rank - 2] += 1;
+          kicker = getKicker(ranks);
+        }
+      }
+      return 'Flush in clubs' + ', ' + kicker + ' high';
     } else if (suits.diamonds >= 5) {
-      return 'Flush in diamonds';
+      for (n = 0, len3 = hand.length; n < len3; n++) {
+        card = hand[n];
+        if (card.value.includes('D')) {
+          rank = card.rank;
+          ranks[rank - 2] += 1;
+          kicker = getKicker(ranks);
+        }
+      }
+      return 'Flush in diamonds' + ', ' + kicker + ' high';
     } else if (suits.spades >= 5) {
-      return 'Flush in spades';
+      for (o = 0, len4 = hand.length; o < len4; o++) {
+        card = hand[o];
+        if (card.value.includes('S')) {
+          rank = card.rank;
+          ranks[rank - 2] += 1;
+          kicker = getKicker(ranks);
+        }
+      }
+      return 'Flush in spades' + ', ' + kicker + ' high';
     } else {
       return ' ';
     }
   };
 
   hasPairsOrTripsOrQuads = function(hand) {
-    var card, highCard, i, index, j, k, len, len1, outcome, outcome1, pair, pair1, pair2, pairs, quads, rank, ranks, trips, value;
+    var card, highCard, i, index, k, kicker, l, len, len1, outcome, pair, pair1, pair2, pairs, quads, rank, ranks, trips, value;
     // these arrays keeps track of hand strengths registered
     quads = [];
     trips = [];
     pairs = [];
     ranks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-//check every card in hand
-    for (j = 0, len = hand.length; j < len; j++) {
-      card = hand[j];
+// check every card in hand
+    for (k = 0, len = hand.length; k < len; k++) {
+      card = hand[k];
       rank = card.rank;
+      // place the card rank in the array with same index. Card '4H' gets placed in the fourth element-> rank[3]
       ranks[rank - 2] += 1;
     }
 // check for how many of same
-    for (index = k = 0, len1 = ranks.length; k < len1; index = ++k) {
+    for (index = l = 0, len1 = ranks.length; l < len1; index = ++l) {
       value = ranks[index];
       if (value === 2) {
         //index+1 IS ALSO EQUAL to the card rank
@@ -620,6 +719,7 @@
         quads.push(index + 1);
       }
     }
+    kicker = getKicker(ranks);
     // no pair (high card)
     if (pairs.length === 0 && quads.length === 0 && trips.length === 0) {
       i = ranks.length;
@@ -632,28 +732,29 @@
         }
         i--;
       }
-    // one pair
+    // ONE PAIR
     } else if (pairs.length === 1 && trips.length === 0 && quads.length === 0) {
+      // the actual pair
       pairs[0] += 1;
-      return 'Pair of ' + pairs[0].toString();
+      return 'Pair of ' + pairs[0].toString() + ', ' + kicker + ' kicker';
     // two pair
     } else if (pairs.length === 2) {
       pair1 = (pairs[0] + 1).toString();
       pair2 = (pairs[1] + 1).toString();
-      outcome1 = "Two pairs " + pair1 + ' and ' + pair2;
-      return outcome1;
+      outcome = "Two pairs " + pair1 + ' and ' + pair2 + ', ' + kicker + ' kicker';
+      return outcome;
     // three pair
     } else if (pairs.length === 3) {
       pair1 = (pairs[0] + 1).toString();
       pair2 = (pairs[1] + 1).toString();
-      outcome1 = "Two pairs " + pair1 + ' and ' + pair2;
-      return outcome1;
+      outcome = "Two pairs " + pair1 + ' and ' + pair2 + ', ' + kicker + ' kicker';
+      return outcome;
     }
     // trips
     if (trips.length === 1) {
       if (pairs.length === 0) {
         card = (trips[0] + 1).toString();
-        return 'Three of a kind ' + card;
+        return 'Three of a kind ' + card + ', ' + kicker + ' kicker';
       }
       // full house
       if (pairs.length === 1) {
@@ -671,25 +772,27 @@
   };
 
   hasStraight = function(hand) {
-    var card, index, j, k, len, len1, rank, ranks;
+    var card, index, k, kicker, l, len, len1, rank, ranks;
     ranks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 // place every card in correct order
-    for (j = 0, len = hand.length; j < len; j++) {
-      card = hand[j];
+    for (k = 0, len = hand.length; k < len; k++) {
+      card = hand[k];
       rank = card.rank;
       ranks[rank - 2] += 1;
     }
 // loop cards
-    for (index = k = 0, len1 = ranks.length; k < len1; index = ++k) {
+    for (index = l = 0, len1 = ranks.length; l < len1; index = ++l) {
       card = ranks[index];
       // no straight if 3 cards of same value
       if (ranks[index] === 3) {
 
       } else if (ranks[index] > 0) {
         if (ranks[index + 1] > 0 && ranks[index + 2] > 0 && ranks[index + 3] > 0 && ranks[index + 4] > 0) {
-          return 'Straight ';
+          kicker = getKicker(ranks);
+          kicker = kicker.toString();
+          return 'Straight ' + kicker + ' high';
         } else {
-          return ' ';
+          return '';
         }
       }
     }
@@ -721,7 +824,7 @@
     // villain
     if (villainBet === 0) {
       if (villain_current_bet.text = 'Check') {
-        return console.log('running');
+
       } else {
         return villain_current_bet.innerHTML = '';
       }
@@ -900,7 +1003,6 @@
     isVillainDealer = !heroIsDealer;
     //rand = Math.random() * 100 + 20
     rand = 80;
-    console.log(' OAIJFOIAJ');
     return setTimeout((function() {
       var betAmount, facingBet;
       
@@ -1005,7 +1107,6 @@
             betAmount = hero.getCurrentBet() + 100;
             villainCreateAndMakeBet(betAmount);
             renderButtons(betAmount);
-            console.log('FROM BOT: ' + hero.getCurrentBet());
           }
         } else {
           
@@ -1128,7 +1229,6 @@
             villain.calls(facingBet);
             renderVillainCallText();
             // call as dealer -> next street
-            console.log('her');
             setTimeout((function() {
               return dealNextStreet(currentStreet);
             }), 200);
@@ -1201,7 +1301,6 @@
     var facingBet;
     facingBet = villain.getCurrentBet() - hero.getCurrentBet();
     hero_image.classList.remove("glowing");
-    console.log('facing bet ' + facingBet);
     // dealer preflop
     if (currentStreet === 1 && heroIsDealer) {
       
@@ -1245,8 +1344,6 @@
           }), 1000);
         // facing bet
         } else if (facingBet > 0) {
-          console.log('calling amount: ' + facingBet);
-          console.log('currentbet amount: ' + hero.getCurrentBet());
           hero.calls(facingBet);
           setTimeout((function() {
             return dealNextStreet(currentStreet);
@@ -1403,6 +1500,19 @@
 
   new_hand_btn.addEventListener('click', startHand);
 
-  startHand();
+  //startHand()
+  heroCards = [deck[0], deck[1]];
+
+  board = [deck[2], deck[3], deck[6], deck[19], deck[32]];
+
+  hand1 = [deck[2], deck[3], deck[18], deck[45], deck[30], deck[0], deck[1]];
+
+  heroStrength = getHandStrength(heroCards, board);
+
+  console.log(heroCards);
+
+  console.log(board);
+
+  console.log('heros hand strength: ' + heroStrength);
 
 }).call(this);

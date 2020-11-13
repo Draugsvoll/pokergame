@@ -326,7 +326,6 @@ dealFlop = ->
     currentStreet++
     hero.clearCurrentBet()
     villain.clearCurrentBet()
-    console.log 'FROM DEALFLOP: ' + hero.getCurrentBet()
     # glowing effect
     if heroIsDealer
         villain_image.className = " glowing"
@@ -336,9 +335,12 @@ dealFlop = ->
         villain_image.classList.remove("glowing")
     renderEmptyTableGraphics()
 
-    # Villain act first if OOP
+    # Villain act first OOP
     if heroIsDealer
-        villainAct()
+        setTimeout ( -> 
+            villainAct()
+        ), 800
+    # hero act first
     else
         button_bar.style.visibility = 'visible'
     i = 3
@@ -402,24 +404,6 @@ dealRiver = ->
     console.log 'river dealet, det er ' + deck.length + ' kort igjen'
     renderHandSrengths()
 
-# determine winning hand at end (rank by integers)
-handRank = (hand) ->
-    if hand.includes('Four')
-        return 9
-    else if hand.includes('Full')
-        return 8
-    else if hand.includes('Flush')
-        return 7
-    else if hand.includes('Straight')
-        return 6
-    else if hand.includes('Three')
-        return 5
-    else if hand.includes('Two')
-        return 4
-    else if hand.includes('Pair')
-        return 3
-    else
-        return 2
 
 endHand = ->
     # hide new hand btn
@@ -466,38 +450,99 @@ endHand = ->
 # GET HAND-STRENGTH INFORMATION
 #
 getHandStrength = (playerCards, board) ->
-    handStrength = ['']
+    handStrengths = ['']
+    strongestHand = ['']
+    rank = 0
     # get the hand
     hand = []
     for card in playerCards
         hand.push(card)
     for card in board   
         hand.push(card)
-    #check for hand strengths
-    handStrength.push(hasFlush(hand))
-    handStrength.push(hasPairsOrTripsOrQuads(hand))
-    handStrength.push(hasStraight(hand))
-    # return hand (the strongest one)
-    for strength, index in handStrength
-        if handStrength[index].includes('Four')
-            return handStrength[index]
+    # check for all hand strengths
+    handStrengths.push(hasFlush(hand))
+    handStrengths.push(hasPairsOrTripsOrQuads(hand))
+    handStrengths.push(hasStraight(hand))
+
+    # return the strongest one
+    for strength, index in handStrengths
+        if handStrengths[index].includes('Four')
+            rank = 9
+            strongestHand = []
+            strongestHand.push(handStrengths[index])
         else if strength.includes('house')
-            return handStrength[index]
+            if rank < 8
+                rank = 8
+                strongestHand = []
+                strongestHand.push(handStrengths[index])
         else if strength.includes('Flush')
-            return handStrength[index]
+            if rank < 7
+                rank = 7
+                strongestHand = []
+                strongestHand.push(handStrengths[index])
         else if strength.includes('Straight')
-            return handStrength[index]
+            if rank < 6
+                rank = 6
+                strongestHand = []
+                strongestHand.push(handStrengths[index])
         else if strength.includes('Three')
-            return handStrength[index]
+            if rank < 5
+                rank = 5
+                strongestHand = []
+                strongestHand.push(handStrengths[index])
         else if strength.includes('Two')
-            return handStrength[index]
+            if rank < 4
+                rank = 4
+                strongestHand = []
+                strongestHand.push(handStrengths[index])
         else if strength.includes('Pair')
-            return handStrength[index]
-        else if strength.includes('High')
-            return handStrength[index]
+            if rank < 3
+                rank = 3
+                strongestHand = []
+                strongestHand.push(handStrengths[index])
+        else if strength.includes('High card')
+            if rank < 2
+                rank = 2
+                strongestHand = []
+                strongestHand.push(handStrengths[index])
+
+    return strongestHand[0]
+
+# determine winning hand at end (rank by integers)
+handRank = (hand) ->
+    if hand.includes('Four')
+        return 9
+    else if hand.includes('Full')
+        return 8
+    else if hand.includes('Flush')
+        return 7
+    else if hand.includes('Straight')
+        return 6
+    else if hand.includes('Three')
+        return 5
+    else if hand.includes('Two')
+        return 4
+    else if hand.includes('Pair')
+        return 3
+    else if hand.includes('High')
+        return 2
+
+# kicker for ranked type hands
+getKicker = (ranks) ->
+        j = ranks.length
+        while j > 0
+            kicker = ''
+            if ranks[j-1] is 1
+                kicker = j+1
+                return kicker
+                j=0
+            j--
+
     
 hasFlush = (hand) ->    
     suits = { hearts: 0, spades: 0, clubs: 0, diamonds: 0 } 
+    ranks = [ 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 0 ] # used to track high cards
+
     # push suits in hand to new array
     for card, index in hand
         if card.value.includes('H')
@@ -508,15 +553,37 @@ hasFlush = (hand) ->
             suits.diamonds += 1
         else if card.value.includes('S')
             suits.spades +=1
+
     # check for flush
     if suits.hearts >= 5
-        return 'Flush in Hearts'
+        for card in hand
+            if card.value.includes('H')
+                rank = card.rank
+                # place the card rank in the array with same index. Card '4H' gets placed in the fourth element-> rank[3]
+                ranks[rank-2] +=1
+                kicker = getKicker(ranks)
+        return 'Flush in Hearts' + ', ' + kicker + ' high'
     else if suits.clubs >= 5  
-        return 'Flush in clubs'
+        for card in hand
+            if card.value.includes('C')
+                rank = card.rank
+                ranks[rank-2] +=1
+                kicker = getKicker(ranks)
+        return 'Flush in clubs' + ', ' + kicker + ' high'
     else if suits.diamonds >= 5  
-        return 'Flush in diamonds'
+        for card in hand
+            if card.value.includes('D')
+                rank = card.rank
+                ranks[rank-2] +=1
+                kicker = getKicker(ranks)
+        return 'Flush in diamonds' + ', ' + kicker + ' high'
     else if suits.spades >= 5  
-        return 'Flush in spades'
+        for card in hand
+            if card.value.includes('S')
+                rank = card.rank
+                ranks[rank-2] +=1
+                kicker = getKicker(ranks)
+        return 'Flush in spades' + ', ' + kicker + ' high'
     else   
         return ' '
 
@@ -527,9 +594,10 @@ hasPairsOrTripsOrQuads = (hand) ->
     pairs = []
     ranks = [ 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 0 ]
 
-    #check every card in hand
+    # check every card in hand
     for card in hand
         rank = card.rank
+        # place the card rank in the array with same index. Card '4H' gets placed in the fourth element-> rank[3]
         ranks[rank-2] +=1
     # check for how many of same
     for value, index in ranks
@@ -540,6 +608,7 @@ hasPairsOrTripsOrQuads = (hand) ->
             trips.push(index+1)
         else if value is 4
             quads.push(index+1)
+    kicker = getKicker(ranks)
     # no pair (high card)
     if pairs.length is 0 && quads.length is 0 && trips.length is 0
             i = ranks.length
@@ -549,27 +618,28 @@ hasPairsOrTripsOrQuads = (hand) ->
                     return 'High card '+ highCard
                 else
                 i--
-    # one pair
+    # ONE PAIR
     else if pairs.length is 1 && trips.length is 0 && quads.length is 0
+        # the actual pair
         pairs[0] += 1
-        return 'Pair of ' + pairs[0].toString()
+        return 'Pair of ' + pairs[0].toString() + ', ' + kicker + ' kicker'
     # two pair
     else if pairs.length is 2
         pair1 = (pairs[0]+1).toString()
         pair2 = (pairs[1]+1).toString()
-        outcome1 = "Two pairs " + pair1 + ' and ' + pair2
-        return outcome1
+        outcome = "Two pairs " + pair1 + ' and ' + pair2 + ', ' + kicker + ' kicker'
+        return outcome
     # three pair
     else if pairs.length is 3
         pair1 = (pairs[0]+1).toString()
         pair2 = (pairs[1]+1).toString()
-        outcome1 = "Two pairs " + pair1 + ' and ' + pair2
-        return outcome1
+        outcome = "Two pairs " + pair1 + ' and ' + pair2 + ', ' + kicker + ' kicker'
+        return outcome
     # trips
     if trips.length is 1
         if pairs.length is 0
             card = (trips[0]+1).toString()
-            return 'Three of a kind ' + card
+            return 'Three of a kind ' + card + ', ' + kicker + ' kicker'
         # full house
         if pairs.length is 1
             pair = pairs[0]+1
@@ -580,6 +650,7 @@ hasPairsOrTripsOrQuads = (hand) ->
     if quads.length is 1
         outcome = "Four of a kind " + (quads[0]+1).toString()
         return outcome
+
 
 hasStraight = (hand) ->
     ranks = [ 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 0 ]
@@ -593,9 +664,11 @@ hasStraight = (hand) ->
         if ranks[index] is 3
         else if ranks[index] > 0
             if ranks[index+1]>0 && ranks[index+2]>0 && ranks[index+3]>0 && ranks[index+4]>0
-                return 'Straight '
-            else  
-                return ' '
+                kicker = getKicker(ranks)
+                kicker = kicker.toString()
+                return 'Straight ' + kicker + ' high'
+            else    
+                return ''
 
 #
 # RENDERING #
@@ -621,7 +694,6 @@ renderBets = ->
     # villain
     if villainBet is 0
         if villain_current_bet.text = 'Check'
-            console.log 'running'
         else
             villain_current_bet.innerHTML = ''
     else
@@ -777,7 +849,6 @@ villainAct =  ->
     isVillainDealer = !heroIsDealer
     #rand = Math.random() * 100 + 20
     rand = 80
-    console.log ' OAIJFOIAJ'
     setTimeout (->
         #
         # PRE-FLOP #
@@ -872,7 +943,6 @@ villainAct =  ->
                     betAmount = hero.getCurrentBet() + 100
                     villainCreateAndMakeBet(betAmount)
                     renderButtons(betAmount)
-                    console.log 'FROM BOT: ' + hero.getCurrentBet()
             # villain faces bet flop
             else 
                 # fold
@@ -985,7 +1055,6 @@ villainAct =  ->
                     villain.calls(facingBet)
                     renderVillainCallText()
                     # call as dealer -> next street
-                    console.log 'her'
                     setTimeout ( -> 
                         dealNextStreet(currentStreet)
                     ), 200
@@ -1051,7 +1120,6 @@ betRaise = ->
 checkCall = ->
     facingBet = villain.getCurrentBet() - hero.getCurrentBet()
     hero_image.classList.remove("glowing")
-    console.log 'facing bet ' + facingBet
 
     # dealer preflop
     if currentStreet is 1 && heroIsDealer  
@@ -1092,8 +1160,6 @@ checkCall = ->
                 ), 1000
             # facing bet
             else if facingBet > 0
-                console.log 'calling amount: ' + facingBet
-                console.log 'currentbet amount: ' + hero.getCurrentBet()
                 hero.calls(facingBet)
                 setTimeout ( ->
                     dealNextStreet(currentStreet)
@@ -1230,7 +1296,17 @@ startHand = ->
     ), 800
 
 new_hand_btn.addEventListener 'click', startHand
-startHand()
+#startHand()
 
 
+heroCards = [ deck[0], deck[1] ]
+board = [ deck[2], deck[3], deck[6], deck[19], deck[32] ]
 
+hand1 = [ deck[2], deck[3], deck[18], deck[45], deck[30], deck[0], deck[1] ]
+
+heroStrength = getHandStrength(heroCards, board)
+
+console.log heroCards
+console.log board
+
+console.log 'heros hand strength: ' + heroStrength
