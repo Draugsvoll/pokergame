@@ -797,7 +797,7 @@
     } else {
       // facing bet
       fold_btn.innerHTML = 'Fold';
-      check_call_btn.innerHTML = 'Call $' + facingBet;
+      check_call_btn.innerHTML = 'Call $' + (facingBet - hero.getCurrentBet());
       return bet_raise_btn.innerHTML = 'Raise $' + (facingBet + 100);
     }
   };
@@ -1008,6 +1008,8 @@
             console.log('FROM BOT: ' + hero.getCurrentBet());
           }
         } else {
+          
+          // fold
           // villain faces bet flop
           if (rand < 33) {
             villainFold();
@@ -1034,9 +1036,9 @@
       // TURN #####################
       //#
       } else if (currentStreet === 3) {
-        // facing check
+        // facing no bet
         if (hero.getCurrentBet() === 0) {
-          // check
+          // CHECK
           if (rand < 33) {
             renderVillainCheckText();
             if (!heroIsDealer) {
@@ -1045,12 +1047,15 @@
                 return dealNextStreet(currentStreet);
               }), 200);
             }
-          } else if (rand > 33 && rand < 66) {
+          
+          // call
+          } else if (rand < 66) {
             betAmount = hero.getCurrentBet();
             betAmount += 100;
             villainCreateAndMakeBet(betAmount);
             renderButtons(betAmount);
-          } else {
+          // raise
+          } else if (rand > 66) {
             betAmount = hero.getCurrentBet();
             betAmount += 100;
             villainCreateAndMakeBet(betAmount);
@@ -1058,13 +1063,27 @@
           }
         } else {
           
+          // fold
           // villain faces bet turn
-          villain.calls(hero.getCurrentBet() - villain.getCurrentBet());
-          renderVillainCallText();
-          hideHeroActionBar = true;
-          setTimeout((function() {
-            return dealNextStreet(currentStreet);
-          }), 200);
+          if (rand < 33) {
+            villainFold();
+            renderVillainFoldText();
+            hideHeroActionBar = false;
+          // call
+          } else if (rand < 66) {
+            villain.calls(hero.getCurrentBet() - villain.getCurrentBet());
+            renderVillainCallText();
+            hideHeroActionBar = true;
+            setTimeout((function() {
+              return dealNextStreet(currentStreet);
+            }), 200);
+          // raise
+          } else if (rand > 66) {
+            betAmount = hero.getCurrentBet();
+            betAmount += 100;
+            villainCreateAndMakeBet(betAmount);
+            renderButtons(betAmount);
+          }
         }
       
       // RIVER #####################

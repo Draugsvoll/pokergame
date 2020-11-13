@@ -1,7 +1,7 @@
 * {
     user-select: none;
     color: rgba(255, 255, 255, 0.95);
-    /* border: 1px solid blue; */
+    border: 1px solid blue;
 }
 
 body, html {
@@ -43,6 +43,10 @@ body {
     margin-right: 30%;
 }
 
+
+.villain-table-graphics {
+    height:110px;
+}
 .villain-container {
     display: flex;
     width: 1000px;
@@ -50,30 +54,39 @@ body {
     height: 151px;
     justify-content: center;
 }
-
 .villain-leftbox {
     width:150px;
     margin: auto 0;
     text-align: end;
 }
-
 .villain-centerbox {
     width:130px;
     vertical-align: middle;
     height: 151px;
 }
-
 .villain-rightbox {
     width:150px;
     margin: auto 0;
     text-align: start;
-
+}
+.hero-leftbox {
+    width:150px;
+    margin: auto 0;
+    text-align: end;
+}
+.hero-centerbox {
+    width:130px;
+    vertical-align: middle;
+    height: 151px;
+}
+.hero-rightbox {
+    width:150px;
+    margin: auto 0;
+    text-align: start;
 }
 
 
-.villain-table-graphics {
-    height:110px;
-}
+
 
 
 .table-text {
@@ -158,6 +171,7 @@ img {
 .hero-stack, .villain-stack {
     height: 24px;
     font-size:18px;
+    margin-bottom: 0;
 }
 
 .card-container-hero {
