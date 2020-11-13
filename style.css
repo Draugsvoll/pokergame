@@ -1,6 +1,6 @@
 * {
     user-select: none;
-    color: rgba(255, 255, 255, 0.95);
+    color: rgba(233, 232, 243, 0.95);
     /* border: 1px solid purple; */
 }
 
@@ -97,11 +97,11 @@ body {
 
 
 .table-text {
-    font-size: 26px;
+    font-size: 30px;
     visibility: hidden;
     /* background: rgba(2, 23, 2, 0.6); */
     margin: 0 auto 30px auto;
-    text-shadow: 0 0 1px #6daff0, 0 0 4px #e93547;
+    text-shadow: 0 0 2px #0d6fd1, 0 0 4px #e93547;
 }
 
 .button-bar {
@@ -120,7 +120,7 @@ button {
     margin-right: 10px;
     border: 1.5px solid rgb(5, 2, 16, 0.7);
     outline: none;
-    font-size: 17px;
+    font-size: 16px;
     cursor: pointer;
     background: rgb(187,19,19);
     background: linear-gradient(90deg, rgba(187,19,19,1) 18%, rgba(194,28,28,1) 77%);
@@ -151,7 +151,7 @@ button:hover {
    margin: 6px auto;
 
    background: rgb(29,64,15);
-   background: linear-gradient(90deg, rgba(29,64,15,1) 0%, rgba(14,91,19,1) 51%, rgba(19,71,45,1) 100%);
+   background: linear-gradient(90deg, rgba(29,64,15,1) 0%, rgba(14,91,19,1) 51%, rgba(12,80,15,1) 100%);
 
    /* background: rgb(2, 69, 6) */
 }
@@ -175,11 +175,11 @@ img {
 
 .hero-strength {
     height: 24px;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .villain-strength {
-    font-size: 16px;
+    font-size: 15px;
     margin:auto;
 }  
 
@@ -259,7 +259,6 @@ img {
         box-shadow: 0 0 2px white;
     }
 } */
-
 .glowing {
     border: 2px solid white;
     /* -webkit-animation: glow 0.8s infinite alternate;  
@@ -280,3 +279,13 @@ input {
     background: rgba(0,0,0,0.5)
 }
 
+
+@media only screen and (max-width: 600px) {
+    body {
+      background-color: lightblue;
+    }
+    .table {
+       width:425px;
+       height: 355px;
+    }
+  }
