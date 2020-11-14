@@ -922,7 +922,7 @@
       check_call_btn.innerHTML = 'Check';
       return bet_raise_btn.innerHTML = 'Bet $' + (facingBet + 100);
     // facing small blind
-    } else if (facingBet === 1) {
+    } else if (facingBet === 25) {
       fold_btn.innerHTML = 'Fold';
       check_call_btn.innerHTML = 'Call $' + facingBet;
       return bet_raise_btn.innerHTML = 'Raise $' + 100;
@@ -1052,12 +1052,12 @@
           // call
           } else if (rand > 33 && rand < 66) {
             // villain only calls small blind
-            if (facingBet === 1) {
-              villain.calls(1);
+            if (facingBet === 25) {
+              villain.calls(25);
               renderVillainCallText();
               renderButtons(0);
             // villain calls a raise -> next street
-            } else if (facingBet > 1) {
+            } else if (facingBet > 25) {
               villain.calls(facingBet);
               renderVillainCallText();
               hideHeroActionBar = true;
@@ -1075,7 +1075,7 @@
         } else {
           // react to Hero call blind
           // villain not dealer
-          if (hero.getCurrentBet() === 2) {
+          if (hero.getCurrentBet() === 50) {
             if (rand <= 50) {
               renderVillainCheckText();
               hideHeroActionBar = true;
@@ -1083,13 +1083,13 @@
                 return dealNextStreet(currentStreet);
               }), villainActTime);
             } else if (rand > 50) {
-              betAmount = hero.getCurrentBet() + 98;
+              betAmount = hero.getCurrentBet() + 50;
               villainCreateAndMakeBet(betAmount);
               renderButtons(betAmount);
             }
           }
           // faces raise
-          if (hero.getCurrentBet() > 2) {
+          if (hero.getCurrentBet() > 50) {
             // fold to raise
             if (rand < 33) {
               villainFold();
@@ -1316,7 +1316,7 @@
     // the betsize sum inlcudes the players bet already on table. This gets adjusted in Player.bet()
     hero_image.classList.remove("glowing");
     amount = villain.getCurrentBet();
-    if (amount <= 2) {
+    if (amount <= 50) {
       amount = 100;
     } else {
       amount *= 2;
@@ -1338,11 +1338,11 @@
     if (currentStreet === 1 && heroIsDealer) {
       
       // call SB 
-      if (facingBet === 1) {
-        hero.calls(1);
+      if (facingBet === 25) {
+        hero.calls(25);
         villainAct();
       // calling raise 
-      } else if (facingBet > 1) {
+      } else if (facingBet > 25) {
         hero.calls(facingBet);
         setTimeout((function() {
           return dealNextStreet(currentStreet);
@@ -1358,7 +1358,7 @@
           return dealNextStreet(currentStreet);
         }), 1000);
       // checking BB
-      } else if (facingBet <= 2) {
+      } else if (facingBet <= 50) {
         //renderHeroCheckText()
         setTimeout((function() {
           return dealNextStreet(currentStreet);
@@ -1416,13 +1416,13 @@
     }
 
     paySmallBlind() {
-      this.stackSize -= 1;
-      return this.currentBet = 1;
+      this.stackSize -= 25;
+      return this.currentBet = 25;
     }
 
     payBigBlind() {
-      this.stackSize -= 2;
-      return this.currentBet = 2;
+      this.stackSize -= 50;
+      return this.currentBet = 50;
     }
 
     getStackSize() {
