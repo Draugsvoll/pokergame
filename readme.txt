@@ -13,3 +13,5 @@ currentStreet incremented inside dealCards() functions
 
 
 # TODO
+center table vertically
+fix BB sizes

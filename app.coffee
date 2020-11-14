@@ -407,8 +407,6 @@ dealRiver = ->
 
 
 endHand = ->
-    # hide new hand btn
-    new_hand_btn.style.display = "block"
     # show villain hand
     villainCard1DOM.src = "assets/#{villainCards[0].value}.png"
     villainCard2DOM.src = "assets/#{villainCards[1].value}.png"
@@ -440,6 +438,9 @@ endHand = ->
         hero.stackSize += amount
         villain.stackSize += amount
 
+    setTimeout ( ->
+        new_hand_btn.style.display = "block"
+    ), 1500
     # show end of hand text
     emptyTableForAnnouncementText()
     announcementText.innerHTML = announcement 
@@ -871,7 +872,8 @@ villainAct =  ->
     hero_image.classList.remove("glowing")
 
     isVillainDealer = !heroIsDealer
-    rand = Math.random() * 100 + 13
+    #rand = Math.random() * 100 + 13
+    rand = 50
     villainActTime = 2500
     setTimeout (->
         #
@@ -1075,6 +1077,7 @@ villainAct =  ->
                 else if rand < 66
                     villain.calls(facingBet)
                     renderVillainCallText()
+                    hideHeroActionBar = true
                     # call as dealer -> next street
                     setTimeout ( -> 
                         dealNextStreet(currentStreet)
@@ -1094,7 +1097,7 @@ villainAct =  ->
         else
             setTimeout ( -> 
                 button_bar.style.visibility = 'visible'
-            ), 900
+            ), 600
 
     ), 2500 #total act time
 
@@ -1105,22 +1108,25 @@ villainAct =  ->
 # FOLD BUTTON LOGIC
 heroFold = ->
     # reset stuff for new hand
-    hero_image.classList.remove("glowing")
-    button_bar.style.visibility = 'hidden'
-    villain.winsPot()
     renderEmptyHeroCards()
-    currentStreet = 0
-    deck = getNewDeck()
-    heroIsDealer = !heroIsDealer
+    button_bar.style.visibility = 'hidden'
+    setTimeout ( -> 
+        hero_image.classList.remove("glowing")
+        villain.winsPot()
+        currentStreet = 0
+        deck = getNewDeck()
+        heroIsDealer = !heroIsDealer
 
-    # end of hand text
-    emptyTableForAnnouncementText()
-    hero_current_action.innerHTML = 'Fold'
-    announcementText.innerHTML = 'Villain wins: ' + potSize + '$'
-    announcementText.style.visibility = "visible"
-    setTimeout ( ->
-        startHand()
-    ), 1500
+        # end of hand text
+        emptyTableForAnnouncementText()
+        hero_current_action.innerHTML = 'Fold'
+        announcementText.innerHTML = 'Villain wins: ' + potSize + '$'
+        announcementText.style.visibility = "visible"
+        setTimeout ( ->
+            startHand()
+        ), 1500
+    ), 500
+    
 
 #
 # BET/RAISE BUTTON LOGIC
@@ -1156,7 +1162,7 @@ checkCall = ->
             hero.calls(facingBet)
             setTimeout ( ->
                 dealNextStreet(currentStreet)
-            ), 800
+            ), 1000
     # check/call OOP preflop 
     else if currentStreet is 1 && !heroIsDealer
         hero.calls(facingBet)
@@ -1165,13 +1171,13 @@ checkCall = ->
             hero_current_action.innerHTML = ''
             setTimeout ( ->
                 dealNextStreet(currentStreet)
-            ), 800
+            ), 1000
         # checking BB
         else if facingBet <= 2
             #renderHeroCheckText()
             setTimeout ( ->
                 dealNextStreet(currentStreet)
-            ), 800
+            ), 1000
     
     # NORMAL check/call every street
     else 
@@ -1181,13 +1187,13 @@ checkCall = ->
             if facingBet is 0
                 setTimeout ( ->
                     dealNextStreet(currentStreet)
-                ), 2000
+                ), 1000
             # facing bet
             else if facingBet > 0
                 hero.calls(facingBet)
                 setTimeout ( ->
                     dealNextStreet(currentStreet)
-                ), 2000
+                ), 1000
         # check to villain
         else if facingBet is 0 
             hero.calls(facingBet)
@@ -1198,7 +1204,7 @@ checkCall = ->
             hero_current_action.innerHTML = ''
             setTimeout ( ->
                 dealNextStreet(currentStreet)
-            ), 2000
+            ), 1000
 
 
     button_bar.style.visibility = 'hidden'
@@ -1294,7 +1300,6 @@ startHand = ->
     
     # deal cards
     setTimeout ( ->
-
         potSize = 3
         potDOM.innerHTML = 'Pot: $' + potSize
         # Pay blinds

@@ -286,8 +286,9 @@ input {
         margin-top:0px;    
     }
     .button-bar {
-        margin-top: 10px;
-        margin-bottom: 1px;
+        margin-top: 4px;
+        margin-bottom: 2px;
+        align-items: center;
     }
     #villain-image {
         margin-top: 0px;
@@ -364,11 +365,12 @@ input {
         margin-top:0px;    
     }
     .button-bar {
-        margin-top: 10px;
+        margin-top: 4px;
         margin-bottom: 1px;
+        align-items: center;
     }
     .new-hand-btn{
-        margin-top: -213px;
+        margin-top: -209px;
         width: 95px;
     }
     button {

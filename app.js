@@ -460,8 +460,6 @@
 
   endHand = function() {
     var amount, announcement, heroHand, heroHandStrength, villainHand, villainHandStrength, winner;
-    // hide new hand btn
-    new_hand_btn.style.display = "block";
     // show villain hand
     villainCard1DOM.src = `assets/${villainCards[0].value}.png`;
     villainCard2DOM.src = `assets/${villainCards[1].value}.png`;
@@ -492,6 +490,9 @@
       hero.stackSize += amount;
       villain.stackSize += amount;
     }
+    setTimeout((function() {
+      return new_hand_btn.style.display = "block";
+    }), 1500);
     // show end of hand text
     emptyTableForAnnouncementText();
     announcementText.innerHTML = announcement;
@@ -1031,7 +1032,8 @@
     villain_image.className = " glowing";
     hero_image.classList.remove("glowing");
     isVillainDealer = !heroIsDealer;
-    rand = Math.random() * 100 + 13;
+    //rand = Math.random() * 100 + 13
+    rand = 50;
     villainActTime = 2500;
     return setTimeout((function() {
       var betAmount, facingBet;
@@ -1254,6 +1256,7 @@
           } else if (rand < 66) {
             villain.calls(facingBet);
             renderVillainCallText();
+            hideHeroActionBar = true;
             // call as dealer -> next street
             setTimeout((function() {
               return dealNextStreet(currentStreet);
@@ -1275,7 +1278,7 @@
       } else {
         return setTimeout((function() {
           return button_bar.style.visibility = 'visible';
-        }), 900);
+        }), 600);
       }
     }), 2500); //total act time
   };
@@ -1286,21 +1289,23 @@
   // FOLD BUTTON LOGIC
   heroFold = function() {
     // reset stuff for new hand
-    hero_image.classList.remove("glowing");
-    button_bar.style.visibility = 'hidden';
-    villain.winsPot();
     renderEmptyHeroCards();
-    currentStreet = 0;
-    deck = getNewDeck();
-    heroIsDealer = !heroIsDealer;
-    // end of hand text
-    emptyTableForAnnouncementText();
-    hero_current_action.innerHTML = 'Fold';
-    announcementText.innerHTML = 'Villain wins: ' + potSize + '$';
-    announcementText.style.visibility = "visible";
+    button_bar.style.visibility = 'hidden';
     return setTimeout((function() {
-      return startHand();
-    }), 1500);
+      hero_image.classList.remove("glowing");
+      villain.winsPot();
+      currentStreet = 0;
+      deck = getNewDeck();
+      heroIsDealer = !heroIsDealer;
+      // end of hand text
+      emptyTableForAnnouncementText();
+      hero_current_action.innerHTML = 'Fold';
+      announcementText.innerHTML = 'Villain wins: ' + potSize + '$';
+      announcementText.style.visibility = "visible";
+      return setTimeout((function() {
+        return startHand();
+      }), 1500);
+    }), 500);
   };
 
   
@@ -1341,7 +1346,7 @@
         hero.calls(facingBet);
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 800);
+        }), 1000);
       }
     // check/call OOP preflop 
     } else if (currentStreet === 1 && !heroIsDealer) {
@@ -1351,13 +1356,13 @@
         hero_current_action.innerHTML = '';
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 800);
+        }), 1000);
       // checking BB
       } else if (facingBet <= 2) {
         //renderHeroCheckText()
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 800);
+        }), 1000);
       }
     } else {
       
@@ -1369,13 +1374,13 @@
         if (facingBet === 0) {
           setTimeout((function() {
             return dealNextStreet(currentStreet);
-          }), 2000);
+          }), 1000);
         // facing bet
         } else if (facingBet > 0) {
           hero.calls(facingBet);
           setTimeout((function() {
             return dealNextStreet(currentStreet);
-          }), 2000);
+          }), 1000);
         }
       // check to villain
       } else if (facingBet === 0) {
@@ -1387,7 +1392,7 @@
         hero_current_action.innerHTML = '';
         setTimeout((function() {
           return dealNextStreet(currentStreet);
-        }), 2000);
+        }), 1000);
       }
     }
     button_bar.style.visibility = 'hidden';
