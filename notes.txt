@@ -13,3 +13,4 @@ currentStreet incremented inside dealCards() functions
 
 
 # TODO
+straight kicker is wrong

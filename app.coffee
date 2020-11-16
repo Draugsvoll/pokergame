@@ -48,6 +48,8 @@ defaultStackSize = 2000
 heroIsDealer = true;
 board = []
 heroCards = []
+heroCardsInteger = []
+villainCardsInteger = []
 villainCards = []
 button_bar.style.visibility = 'hidden'
 potSize = 0
@@ -414,9 +416,11 @@ endHand = ->
     villainStrength.style.visibility = "visible"
     villainStrength.style.display = ""
     # get players hand strength
-    villainHand = getHandStrength(villainCards, board)
-    villainHand = getHandStrength(villainCards, board)
-    heroHand = getHandStrength(heroCards, board)
+    villainHand = getHandStrength(villainCards, board, 'villain')
+    heroHand = getHandStrength(heroCards, board, 'hero')
+    # convert hand strength from string to int
+    console.log 'HERO: ' + heroCardsInteger
+    console.log 'VILLAIN: ' + villainCardsInteger
     # hand strengths output as integer
     villainHandStrength = handRank(villainHand)
     heroHandStrength = handRank(heroHand)
@@ -432,11 +436,23 @@ endHand = ->
         villain.winsPot()
     # split pot
     else
-        winner = 'Split'
-        announcement = 'Split pot '
-        amount = potSize / 2
-        hero.stackSize += amount
-        villain.stackSize += amount
+        # hero wins on kicker
+        if heroCardsInteger[1] > villainCardsInteger[1]
+            winner = 'Hero'
+            announcement = 'Hero wins ' + potSize + '$'
+            hero.winsPot()
+        # villain wins on kicker
+        else if heroCardsInteger[1] < villainCardsInteger[1]
+            winner = 'Villain'
+            announcement = 'Villain wins ' + potSize + ' $'
+            villain.winsPot()
+        else
+            #split
+            winner = 'Split'
+            announcement = 'Split pot '
+            amount = potSize / 2
+            hero.stackSize += amount
+            villain.stackSize += amount
 
     setTimeout ( ->
         new_hand_btn.style.display = "block"
@@ -452,7 +468,7 @@ endHand = ->
 #
 # GET HAND-STRENGTH INFORMATION
 #
-getHandStrength = (playerCards, board) ->
+getHandStrength = (playerCards, board, player) ->
     handStrengths = ['']
     strongestHand = ['']
     rank = 0
@@ -464,7 +480,7 @@ getHandStrength = (playerCards, board) ->
         hand.push(card)
     # check for all hand strengths
     handStrengths.push(hasFlush(hand))
-    handStrengths.push(hasPairsOrTripsOrQuads(hand))
+    handStrengths.push(hasPairsOrTripsOrQuads(hand, player))
     handStrengths.push(hasStraight(hand))
 
     # return the strongest one
@@ -514,7 +530,7 @@ getHandStrength = (playerCards, board) ->
     string2 = string1.replace "11", "Jack"
     string3 = string2.replace "12", "Queen"
     string4 = string3.replace "13", "King"
-    string5 = string4.replace("14", "Ace")
+    string5 = string4.replace "14", "Ace"
     return string5
 
 # determine winning hand at end (rank by integers)
@@ -596,26 +612,12 @@ hasFlush = (hand) ->
     else   
         return ' '
 
-hasPairsOrTripsOrQuads = (hand) ->
+hasPairsOrTripsOrQuads = (hand, player) ->
     # these arrays keeps track of hand strengths registered
     quads = [] 
     trips = []
     pairs = []
     ranks = [ 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 0 ]
-
-    cardRankToName = (cardRank) ->
-        if rank is 10
-            return 'Ten'
-        if rank is 11
-            return 'Jack'
-        if rank is 12 
-            return 'Queen'
-        if rank is 13
-            return 'King'
-        if rank is 14
-            return 'Ace'
-        else 
-            return cardRank
 
     # check every card in hand
     for card in hand
@@ -624,44 +626,67 @@ hasPairsOrTripsOrQuads = (hand) ->
         ranks[rank-2] +=1
     # check for how many of same
     for value, index in ranks
+        #index+1 IS ALSO EQUAL to the card rank
         if value is 2
-            #index+1 IS ALSO EQUAL to the card rank
             pairs.push(index+1)
         else if value is 3
             trips.push(index+1)
         else if value is 4
             quads.push(index+1)
+
     kicker = getKicker(ranks)
+    
     # no pair (high card)
     if pairs.length is 0 && quads.length is 0 && trips.length is 0
             i = ranks.length
             while (i >= 0)
                 if ranks[i] > 0
                     highCard = i+2
+                    if player is 'hero'
+                        heroCardsInteger = [ 2, highCard ]
+                    else    
+                        villainCardsInteger = [ 2, highCard ]
                     return 'High card '+ highCard
                 else
                 i--
     # ONE PAIR
     else if pairs.length is 1 && trips.length is 0 && quads.length is 0
+        if player is 'hero'
+            heroCardsInteger = [ 3, pairs[0] ]
+        else
+            villainCardsInteger = [ 3, pairs[0] ]
         # the actual pair
         pairs[0] += 1
+        console.log 'LOGGING PAIR ' + pairs[0]
         return 'Pair of ' + pairs[0].toString() + ', ' + kicker + ' kicker'
     # two pair
     else if pairs.length is 2
-        pair1 = (pairs[0]+1).toString()
-        pair2 = (pairs[1]+1).toString()
+        pair1 = (pairs[0]+1)
+        pair2 = (pairs[1]+1)
+        if player is 'hero'
+            heroCardsInteger = [ 4, pair2 ]
+        else    
+            villainCardsInteger = [ 4, pair2 ]
         outcome = "Two pairs " + pair1 + ' and ' + pair2 + ', ' + kicker + ' kicker'
         return outcome
     # three pair
     else if pairs.length is 3
-        pair1 = (pairs[0]+1).toString()
-        pair2 = (pairs[1]+1).toString()
+        pair1 = (pairs[0]+1)
+        pair2 = (pairs[1]+1)
+        if player is 'hero'
+            heroCardsInteger = [ 4, pair1 ]
+        else
+            heroCardsInteger = [ 4, pair1 ]
         outcome = "Two pairs " + pair1 + ' and ' + pair2 + ', ' + kicker + ' kicker'
         return outcome
     # trips
     if trips.length is 1
         if pairs.length is 0
-            card = (trips[0]+1).toString()
+            card = (trips[0]+1)
+            if player is 'hero'
+                heroCardsInteger = [ 5, card.rank ]
+            else 
+                heroCardsInteger = [ 5, card.rank ]
             return 'Three of a kind ' + card + ', ' + kicker + ' kicker'
         # full house
         if pairs.length is 1
@@ -689,7 +714,7 @@ hasStraight = (hand) ->
             if ranks[index+1]>0 && ranks[index+2]>0 && ranks[index+3]>0 && ranks[index+4]>0
                 kicker = getKicker(ranks)
                 kicker = kicker.toString()
-                return 'Straight ' + kicker + ' high'
+                return 'Straight ' #+ kicker + ' high'
             else    
                 return ''
 
@@ -874,7 +899,7 @@ villainAct =  ->
     isVillainDealer = !heroIsDealer
     #rand = Math.random() * 100 + 13
     rand = 50
-    villainActTime = 2500
+    villainActTime = 1200
     setTimeout (->
         #
         # PRE-FLOP #
