@@ -1,9 +1,4 @@
-# Imports
-#import test from "./modules/test.coffee"
-#console.log(log)
-
 # DOM HOOKS #
-
 # buttons
 button_bar = document.querySelector('.button-bar')
 fold_btn = document.querySelector(".fold")
@@ -41,24 +36,23 @@ boardCard5 = document.querySelector('#board-card5')
 hero_image = document.querySelector("#hero-image")
 villain_image = document.querySelector("#villain-image")
 
-
 # variables
 currentStreet = 0
 defaultStackSize = 2000
 heroIsDealer = true;
 board = []
+# need both string/integer for hand strengths
 heroCards = []
 heroCardsInteger = []
 villainCardsInteger = []
 villainCards = []
-button_bar.style.visibility = 'hidden'
 potSize = 0
-announcementText.innerHTML = 'asd'
-villainStrength.style.visibility = "hidden"
+announcementText.innerHTML = ''
 villainStrength.style.display = "none"
+villainStrength.style.visibility = "hidden"
+button_bar.style.visibility = 'hidden'
 villain_dealer.style.visibility = "hidden"
 villain_dealer.style.visibility = "hidden"
-actingTime = 500
 
 
 # CREATE CARD DECK
@@ -275,8 +269,6 @@ getNewDeck = ->
   ]
   myNewDeck
 
-
-
 deck = getNewDeck()
 
 # CARD LOGIC
@@ -307,7 +299,6 @@ dealCards = ->
     cardId = Math.floor(Math.random() * deck.length)
     heroCards.push(deck[cardId])
     deck.splice(cardId, 1)
-
     renderPlayerCards()
 
 
@@ -419,8 +410,6 @@ endHand = ->
     villainHand = getHandStrength(villainCards, board, 'villain')
     heroHand = getHandStrength(heroCards, board, 'hero')
     # convert hand strength from string to int
-    console.log 'HERO: ' + heroCardsInteger
-    console.log 'VILLAIN: ' + villainCardsInteger
     # hand strengths output as integer
     villainHandStrength = handRank(villainHand)
     heroHandStrength = handRank(heroHand)
@@ -480,7 +469,7 @@ getHandStrength = (playerCards, board, player) ->
         hand.push(card)
     # check for all hand strengths
     handStrengths.push(hasFlush(hand))
-    handStrengths.push(hasPairsOrTripsOrQuads(hand, player))
+    handStrengths.push(hasRankedBasedHand(hand, player))
     handStrengths.push(hasStraight(hand))
 
     # return the strongest one
@@ -612,13 +601,12 @@ hasFlush = (hand) ->
     else   
         return ' '
 
-hasPairsOrTripsOrQuads = (hand, player) ->
+hasRankedBasedHand = (hand, player) ->
     # these arrays keeps track of hand strengths registered
     quads = [] 
     trips = []
     pairs = []
     ranks = [ 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 0 ]
-
     # check every card in hand
     for card in hand
         rank = card.rank
@@ -657,7 +645,6 @@ hasPairsOrTripsOrQuads = (hand, player) ->
             villainCardsInteger = [ 3, pairs[0] ]
         # the actual pair
         pairs[0] += 1
-        console.log 'LOGGING PAIR ' + pairs[0]
         return 'Pair of ' + pairs[0].toString() + ', ' + kicker + ' kicker'
     # two pair
     else if pairs.length is 2
@@ -747,6 +734,7 @@ renderBets = ->
     else
         villain_current_bet.innerHTML = '$' + villainBet
 
+# villain rendering
 renderVillainFoldText= ->
     villainActing.innerHTML = 'Fold'
 renderVillainCheckText= ->
@@ -755,8 +743,8 @@ renderVillainCallText= ->
     villainActing.innerHTML = 'Call '
 renderVillainBetText= ->
     villainActing.innerHTML = 'Bet ' 
-    
 
+# hero rendering
 renderHeroCheckText = ->
     hero_current_action.innerHTML = 'Check'
 renderHeroCallText = ->
@@ -764,8 +752,8 @@ renderHeroCallText = ->
 renderHeroBetText = ->
     hero_current_action.innerHTML = 'Check'
 
+# reset table graphics
 renderEmptyTableGraphics = ->
-    # reset table graphics
     renderButtons(0)
     hero.clearCurrentBet()
     villain.clearCurrentBet()
@@ -775,7 +763,6 @@ renderEmptyTableGraphics = ->
 renderEmptyHeroCards = ->
     heroCard1DOM.src = 'assets/empty.png'
     heroCard2DOM.src = 'assets/empty.png'
-    
 
 renderEmptyVillainCards = ->
     villainCard1DOM.src = 'assets/empty.png'
@@ -787,7 +774,6 @@ renderPot = (amount) ->
 renderButtons = (facingBet) ->
     hero_image.className = " glowing"
     villain_image.classList.remove("glowing")
-
     # facing no bet
     if facingBet is 0
         fold_btn.innerHTML = 'Fold'
@@ -804,14 +790,12 @@ renderButtons = (facingBet) ->
         check_call_btn.innerHTML = 'Call $' + (facingBet-hero.getCurrentBet())
         bet_raise_btn.innerHTML = 'Raise $' + (facingBet*2)
 
-    
 renderStacks = ->
     heroStackSize = hero.getStackSize()
     villainStackSize = villain.getStackSize()
     heroStack.innerHTML = '$' + heroStackSize
     villainStack.innerHTML = '$' + villainStackSize
     
-
 clearBets = ->
     hero_current_bet.innerHTML = ''
     villain_current_bet.innerHTML = ''
@@ -860,7 +844,6 @@ villainFold = ->
     renderEmptyVillainCards()
     renderVillainFoldText()
     button_bar.style.visibility = 'hidden'
-
     setTimeout ( -> 
         hero.winsPot()
         # reset stuff for new hand
@@ -927,7 +910,7 @@ villainAct =  ->
                         hideHeroActionBar = true
                         setTimeout ( ->
                           dealNextStreet(currentStreet)
-                        ), 1200
+                        ), villainActTime
                     renderVillainCallText()
                 # raise
                 else if rand > 66   
@@ -963,7 +946,7 @@ villainAct =  ->
                         hideHeroActionBar = true;
                         setTimeout ( ->
                             dealNextStreet(currentStreet)
-                        ), 1200    
+                        ), villainActTime    
                     # raise
                     else if rand > 66
                         betAmount = hero.getCurrentBet() * 2
@@ -1028,7 +1011,7 @@ villainAct =  ->
                         hideHeroActionBar = true;
                         setTimeout ( ->
                             dealNextStreet(currentStreet)
-                        ), 1200
+                        ), villainActTime
                 # call
                 else if rand < 66
                     betAmount = hero.getCurrentBet()
@@ -1055,7 +1038,7 @@ villainAct =  ->
                     hideHeroActionBar = true;
                     setTimeout ( ->
                         dealNextStreet(currentStreet)
-                    ), 1200
+                    ), villainActTime
                 # raise
                 else if rand > 66
                     betAmount = hero.getCurrentBet() * 2
@@ -1113,7 +1096,6 @@ villainAct =  ->
                     villainCreateAndMakeBet(betAmount)
                     renderButtons(betAmount)
  
-
         # This always runs after villain acts
         villain_image.classList.remove("glowing")
         renderStacks()
@@ -1124,12 +1106,12 @@ villainAct =  ->
                 button_bar.style.visibility = 'visible'
             ), 600
 
-    ), 2500 #total act time
+    ), 2000 #total act time
+
 
 #
 # HERO BUTTONS (ACTION LOGIC) #
 #
-
 # FOLD BUTTON LOGIC
 heroFold = ->
     # reset stuff for new hand
@@ -1175,7 +1157,6 @@ betRaise = ->
 checkCall = ->
     facingBet = villain.getCurrentBet() - hero.getCurrentBet()
     hero_image.classList.remove("glowing")
-
     # dealer preflop
     if currentStreet is 1 && heroIsDealer  
         # call SB 
@@ -1188,7 +1169,7 @@ checkCall = ->
             setTimeout ( ->
                 dealNextStreet(currentStreet)
             ), 1000
-    # check/call OOP preflop 
+    # not dealer preflop
     else if currentStreet is 1 && !heroIsDealer
         hero.calls(facingBet)
         # calls a bet
@@ -1204,7 +1185,7 @@ checkCall = ->
                 dealNextStreet(currentStreet)
             ), 1000
     
-    # NORMAL check/call every street
+    # check/call postflop
     else 
         # check/call IP -> always next street
         if heroIsDealer
@@ -1230,7 +1211,6 @@ checkCall = ->
             setTimeout ( ->
                 dealNextStreet(currentStreet)
             ), 1000
-
 
     button_bar.style.visibility = 'hidden'
     renderBets()
@@ -1358,14 +1338,11 @@ new_hand_btn.addEventListener 'click', startHand
 #startHand()
 
 
+# SIMULATE HANDS
 # heroCards = [ deck[0], deck[1] ]
 # board = [ deck[2], deck[3], deck[6], deck[19], deck[32] ]
-
 # hand1 = [ deck[2], deck[3], deck[18], deck[45], deck[30], deck[0], deck[1] ]
-
 # heroStrength = getHandStrength(heroCards, board)
-
 # console.log heroCards
 # console.log board
-
 # console.log 'heros hand strength: ' + heroStrength

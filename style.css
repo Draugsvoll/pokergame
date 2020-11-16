@@ -172,6 +172,7 @@ img {
 
 #villain-card1, #villain-card2, #hero-card1, #hero-card2  {
     width: 60px;
+
 }
 
 .hero-strength {
@@ -237,18 +238,17 @@ img {
 #hero-image, #villain-image {
     margin-top: 5px;
     border-radius: 100%;
-    border: 2px solid rgba(0,0,0,0);
+    border: 2px solid rgba(0, 0, 0, 0);
 }
 
 .villain-image-container {
     height: 72px;
 }
 
-
 /* GLOWING BORDER */
-/* @-webkit-keyframes glow {
+@-webkit-keyframes glow {
     to {
-         border: 2px solid rgb(255, 255, 255);
+         border: 2px solid rgba(255, 255, 255, 1);
     -webkit-box-shadow: 0 0 6px white;
        -moz-box-shadow: 0 0 6px white;
             box-shadow: 0 0 6px white;
@@ -257,9 +257,9 @@ img {
         border: 2px solid rgba(210, 221, 215, 0.747);
         box-shadow: 0 0 2px white;
     }
-} */
+}
 .glowing {
-    border: 2px solid white;
+    border: 2px solid white; 
     /* -webkit-animation: glow 0.8s infinite alternate;  
      -webkit-transition: border 0.8s linear, box-shadow 0.8s linear;
        -moz-transition: border 0.8s linear, box-shadow 0.8s linear;
@@ -278,13 +278,15 @@ input {
     background: rgba(0,0,0,0.5)
 }
 
-/* add margin-top when big height */
+
+/* # ###
+/* SCREEN RESPONSIVENESS 
+/* # ###*/
 @media only screen and (min-height: 950px) {
     body {
         margin-top: 125px;
     }
 }
-
 /* smaller width on small screen    */
 @media only screen and (max-width: 600px) {
     @media only screen and (min-height: 695px) {
@@ -292,7 +294,6 @@ input {
             margin-top: 75px;
         }
     }
-
     .table-text {
         font-size: 26px;
         margin-top: -30px;
@@ -331,7 +332,7 @@ input {
         margin-right: 5px;
         font-size: 14px;
     }
-    body {
+    html {
         overflow-x: hidden;
     }
     .hero-container{
@@ -346,14 +347,12 @@ input {
     }
   }
   
-
 @media only screen and (max-width: 430px) {
     @media only screen and (min-height: 675px) {
         body {
             margin-top: 75px;
         }
     }
-    
     .table {
        margin-top: -40px;
        width:360px;
@@ -371,9 +370,7 @@ input {
         width:20px;
         height:20px;
     }
-    body {
-        overflow-x: hidden;
-    }
+    
     #villain-image {
         margin-top: 0px;
     }
