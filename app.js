@@ -85,7 +85,9 @@
 
   potSize = 0;
 
-  announcementText.innerHTML = '';
+  announcementText.innerHTML = 'Welcome to <br> The Poker Lounge';
+
+  announcementText.style.visibility = 'visible';
 
   villainStrength.style.display = "none";
 
