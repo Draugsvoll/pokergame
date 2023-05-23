@@ -13,5 +13,8 @@ currentStreet incremented inside dealCards() functions
 
 
 # TODO
-card rank translate to string
+straight kicker is wrong
 
+
+AUTO RUN/COMPILE:
+	coffee --watch --compile app.coffee

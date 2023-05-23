@@ -5,89 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>The Poker Lounge</title>
+    <!-- <script src="bundled.js"></script> -->
+    <script defer src="app.js" ></script>
 </head>
 <body>
 
     <div class="wrapper">
+        <div class="container">
 
-        <!-- VILLAIN -->
-        <div class="villain-container">
-            <div class="villain-leftbox">
-                <div class="villain-stack">$2000</div>
-            </div>
-            <div class="villain-centerbox">
-                <div><img src="" alt=""></div>
-                <div class="villain-image-container">
-                    <img id="villain-image" src='assets/villain.png'  alt="" >
+            <!-- VILLAIN -->
+            <div class="villain-container">
+                <div class="villain-leftbox">
+                    <div class="villain-stack">$4 000</div>
                 </div>
-                <div class="card-container-villain">
-                    <img id="villain-card1" src='assets/empty.png' alt="" >
-                    <img id="villain-card2" src='assets/empty.png'  alt="" >
+                <div class="villain-centerbox">
+                    <div class="villain-image-container">
+                        <img id="villain-image" src='assets/villain.png'  alt="" >
+                    </div>
+                    <div class="card-container-villain">
+                        <img id="villain-card1" src='assets/empty.png' alt="" >
+                        <img id="villain-card2" src='assets/empty.png'  alt="" >
+                    </div>
+                </div>
+                <div class="villain-rightbox">
+                    <div class="villain-acting"></div>
                     <div class="villain-strength"></div>
                 </div>
             </div>
-            <div class="villain-rightbox">
-                <div class="villain-acting"></div>
-            </div>
-        </div>
-    
-        <!-- TABLE -->
-        <div class="table-container">
-            <div class="table">
 
-                <!-- Villain info on table -->
-                <div class="villain-table-graphics">
-                    <div><img class="villain-dealer" src='assets/button.png' alt=""></div>
-                    <div class="villain-current-bet"></div>
-                    <div class="table-text"></div>
-                </div>
-                <!-- Table graphics -->
-                <div class="pot"></div>
-                <div class="board-container">
-                    <img id="board-card1" src='' alt="">
-                    <img id="board-card2" src='' alt="">
-                    <img id="board-card3" src='' alt="">
-                    <img id="board-card4" src="" alt="">
-                    <img id="board-card5" src='' alt="">
-                </div>
-                <!-- Hero info on TABLE -->
-                <div class="hero-table-graph">
-                    <div class="hero-current-bet"></div>
-                    <div class="hero-current-action"></div>
-                    <div ><img class="hero-dealer" src='assets/button.png' alt=""></div>
+            <!-- TABLE -->
+            <div class="table-container">
+                <div class="table">
+                    <div id="table-logo" class="table-logo">
+                        The Poker Lounge
+                    </div>
+                    <!-- Villain info on table -->
+                    <div class="villain-table-graphics">
+                        <div><img class="villain-dealer" src='assets/button.png' alt=""></div>
+                        <div class="villain-current-bet"></div>
+                        <div class="table-text"></div>
+                    </div>
+                    <!-- Table graphics -->
+                    <div class="pot"></div>
+                    <div class="board-container">
+                        <img id="board-card1" src='' alt="">
+                        <img id="board-card2" src='' alt="">
+                        <img id="board-card3" src='' alt="">
+                        <img id="board-card4" src="" alt="">
+                        <img id="board-card5" src='' alt="">
+                    </div>
+                    <!-- Hero info on TABLE -->
+                    <div class="hero-table-graph">
+                        <div class="hero-current-bet"></div>
+                        <div class="hero-current-action"></div>
+                        <div ><img class="hero-dealer" src='assets/button.png' alt=""></div>
+                    </div>
                 </div>
             </div>
-        </div>
-       
-    
-        <!-- HERO -->
-        <div class="hero-container">
-            <div class="hero-leftbox">
-                <div class="hero-stack">$2000</div>
-            </div>
-            <div class="hero-centerbox">
-                <div class="card-container-hero">
-                    <img id="hero-card1" src='assets/empty.png' alt="">
-                    <img id="hero-card2" src='assets/empty.png' alt="">
-                </div>
-                <img id="hero-image" src='assets/hero.png'  alt="" >
-            </div>
-            <div class="hero-rightbox">
-                <div class="hero-strength"></div>
-            </div>
-        </div>
 
-        <!-- BUTTON BAR -->
-        <div class="button-bar">
-            <div><button class="fold"></button></div>
-            <div><button class="check-call"></button></div>
-            <div><button class="bet-raise"></button></div>
-            <!-- <div><input type="number" name="betslider" min="2" max="2000" value="100"></div> -->
+
+            <!-- HERO -->
+            <div class="hero-container">
+                <div class="hero-leftbox">
+                    <div class="hero-stack">$4 000</div>
+                </div>
+                <div class="hero-centerbox">
+                    <div class="card-container-hero">
+                        <img id="hero-card1" src='assets/empty.png' alt="">
+                        <img id="hero-card2" src='assets/empty.png' alt="">
+                    </div>
+                    <img id="hero-image" src='assets/hero.png'  alt="" >
+                </div>
+                <div class="hero-rightbox">
+                    <div class="hero-strength"></div>
+                </div>
+            </div>
+
+            <!-- BUTTON BAR -->
+            <div class="button-bar">
+                <div><button class="fold"></button></div>
+                <div><button class="check-call"></button></div>
+                <div><button class="bet-raise"></button></div>
+                <!-- <div><input type="number" name="betslider" min="2" max="2000" value="100"></div> -->
+            </div>
+            <div>
+                <button class="new-hand-btn">Start Game</button>
+            </div>
+
+            <!-- HISTORY -->
+            <div class="history" id="history">
+            </div>
+            
         </div>
-        <button class="new-hand-btn">Start Game</button>
     </div>
 
-    <!-- <script src="bundled.js"></script> -->
-    <script src="app.js" ></script>
+        
+    
 </body>
 </html>

@@ -4,7 +4,9 @@
   "description": "",
   "main": "csTut.js",
   "dependencies": {
-    "coffe-script": "^0.0.1-security"
+    "coffe-script": "^0.0.1-security",
+    "coffee-script": "^1.12.7",
+    "coffescript": "0.0.1-security"
   },
   "devDependencies": {
     "coffeescript": "^2.5.1"
